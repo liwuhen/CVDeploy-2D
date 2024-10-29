@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/anaconda3/envs/MIT_bev/lib/python3.8/site-packages/trtpy/trt8cuda115cudnn8/include/**"
+            ],
+            "compilerPath": "/opt/anaconda3/envs/MIT_bev/lib/python3.8/site-packages/trtpy/trt8cuda115cudnn8/bin/nvcc",
+            "cppStandard": "gnu++11",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

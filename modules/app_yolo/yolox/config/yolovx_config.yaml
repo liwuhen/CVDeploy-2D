@@ -1,0 +1,27 @@
+common_config:
+  log_path: /workspace/
+  imgs_path: /config/data/coco/
+
+inference_config:
+  model_acc: 0
+  onnx_path: /config/model/yolov5s.onnx
+  engine_path: /config/model/yolov5s_fp32.trt
+  predict_path: /config/model/predict.data
+  offline_test: 
+    img_path: /config/data/coco/car.jpg
+    save_img: /workspace
+
+preprocessor_config:
+  batch_size: 1
+  src_img_width: 3840
+  src_img_height: 2160
+  src_img_channel: 3
+  dst_img_width: 640
+  dst_img_height: 640
+  dst_img_channel: 3
+
+predict_config:
+  predict_dim: [1, 25200, 85]
+  max_objects: 0
+  obj_threshold: 0.25
+  nms_threshold: 0.5

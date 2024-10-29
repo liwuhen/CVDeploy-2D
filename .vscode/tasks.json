@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "make pro -j6"
+        },
+        {
+            "label": "ReBuild",
+            "type": "shell",
+            "command": "nvcc",
+            "args": ["-g", "-G", "-o0", "${workspaceFolder}/src/main.cpp", "${file}"]
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+<launch>
+    <node pkg="parking_fusion" type="parking_fusion_node" name="parking_fusion_node" output="screen">
+        <rosparam param="topic_sub_loc_vec">["/tpimu_msgs"]</rosparam> 
+        <rosparam param="topic_sub_parking_vec">["/tpparkingperception"]</rosparam>
+        <rosparam param="topic_sub_parkingservice_vec">["/tpparking_statemachine"]</rosparam>
+        <rosparam param="topic_pub_parkings">["/tpglobalparkinginfolist"]</rosparam>
+        <param name="img_path" type="string" value="$(find parking_fusion)/config/model/car1.jpg"/>
+        <param name="yamlpath" type="string" value="$(find parking_fusion)/config/fusionmanager.yaml"/>
+    </node>
+</launch>
