@@ -5,12 +5,12 @@
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 ![NVIDIA](https://img.shields.io/badge/NVIDIA-%2376B900.svg?style=for-the-badge&logo=nvidia&logoColor=white)
 ![Qualcomm](https://img.shields.io/badge/Qualcomm-3253DC?style=for-the-badge&logo=qualcomm&logoColor=white)
+![Parallel Computing](https://img.shields.io/badge/Parallel-Computing-orange?style=for-the-badge)
 ![HPC](https://img.shields.io/badge/HPC-High%20Performance%20Computing-blue?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0yMiAxN3YtMmgtM3YtM2gydi0yaDJ2LTJoLTR2N2gtN3YtN0g4djhoLTNWM0gzdjE4aDE4di00eiIvPjwvc3ZnPg==)
 ![Performance](https://img.shields.io/badge/Performance-Optimized-red?style=for-the-badge)
-![Parallel Computing](https://img.shields.io/badge/Parallel-Computing-orange?style=for-the-badge)
 ![GPU Accelerated](https://img.shields.io/badge/GPU-Accelerated-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 
-The repository mainly provides model inference functionality, and the code provides daily development of packaged libs for integration, testing, and inference. The framework provides multi-threaded model reasoning , singleton pattern , producer and consumer patterns. Cache log analysis is also supported.
+The repository mainly provides model inference functionality, and the code provides daily development of packaged libs for integration, testing, and inference. The framework provides multi-threaded model reasoning , singleton pattern , producer and consumer patterns. Cache log analysis is also supported. At the same time, this repository also supports autopilot driving, parking, and cockpit areas.
 
 # ![third-party](https://img.shields.io/badge/third-party-blue) Third-party Libraries
 
