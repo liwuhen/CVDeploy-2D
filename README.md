@@ -10,7 +10,7 @@
 ![Performance](https://img.shields.io/badge/Performance-Optimized-red?style=for-the-badge)
 ![GPU Accelerated](https://img.shields.io/badge/GPU-Accelerated-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 
-The repository mainly provides model inference functionality, and the code provides daily development of packaged libs for integration, testing, and inference. The framework provides multi-threaded model reasoning , singleton pattern , producer and consumer patterns. Cache log analysis is also supported. At the same time, this repository also supports autopilot driving, parking, and cockpit areas.
+The repository mainly provides model inference functionality, and the code provides daily development of packaged libs for integration, testing, and inference. The framework provides multi-threaded, singleton pattern, producer and consumer patterns. Cache log analysis is also supported. At the same time, this repository also supports autopilot driving, parking, and cockpit areas.
 
 # ![third-party](https://img.shields.io/badge/third-party-blue) Third-party Libraries
 
