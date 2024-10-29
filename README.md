@@ -69,7 +69,7 @@ Shell scripts provide optional platforms.
 - Available parameters are as follows: 
     1) **-a | -all | all**. Compile all modules
     2) **-clean**. Clear compiled files
-    3) **-cross**. Enable cross-compilation mode
+    3) **-arm**.   Enable cross-compilation mode
     4) **-debug**. Enable debug mode
     5) **-x86**.   Enable x86 mode
     6) **-pack**.  Packaging of executables and dynamic libraries
