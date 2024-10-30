@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # 开启错误检测
+set -e  
 
 . ./scripts/bash_config.sh
 
