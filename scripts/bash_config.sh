@@ -21,7 +21,7 @@ CROSS_COMPILE=OFF
 ALL_MODEL_FLAG=OFF
 FUN_BOOL_FLAG=True
 TBUILD_VERSION=Release
-CONFIGURE_SETS=("all" "clean" "cross" "debug" "pack")
+CONFIGURE_SETS=("all" "clean" "arm" "x86" "pack")
 
 # model param
 MODEL_FLAG=NONE
@@ -62,7 +62,6 @@ function parse_args()
                 -all)    ALL_MODEL_FLAG=ON    ;;
                 -clean)  CLEAN_FLAG=ON        ;;
                 -arm)    CROSS_COMPILE=ON     ;;
-                -debug)  TBUILD_VERSION=Debug ;;
                 -x86)    PC_X86_FLAG=ON       ;;
                 -pack)   PACK_FLAG=ON         ;;
                 *)       FUN_BOOL_FLAG=False  ;;
@@ -99,9 +98,8 @@ Available parameters are as follows:
     1) -a | -all | all. Compile all modules
     2) -clean. Clear compiled files
     3) -arm.   Enable cross-compilation mode
-    4) -debug. Enable debug mode
-    5) -x86.   Enable x86 mode
-    6) -pack.  Packaging of executables and dynamic libraries\e[0m"
+    4) -x86.   Enable x86 mode
+    5) -pack.  Packaging of executables and dynamic libraries\e[0m"
         exit 1
     fi
 
