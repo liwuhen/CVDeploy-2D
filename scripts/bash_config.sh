@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # 开启错误检测
+set -e
 
 # common param
 TIME=$(date "+%Y-%m-%d %H:%M:%S")
