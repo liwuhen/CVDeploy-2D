@@ -6,7 +6,7 @@ set -e
 parse_args "$@"
 CMAKE_DIR=${HOME_DIR}
 BUILD_DIR=${HOME_DIR}/build_clang
-COMM_ARGS=" -DCMAKE_BUILD_TYPE=${TBUILD_VERSION} -DMODEL_FLAG=${MODEL_FLAG,,}"
+COMM_ARGS=" -DCMAKE_BUILD_TYPE=${TBUILD_VERSION} -DMODEL_FLAG=${MODEL_FLAG}"
 
 if [ "${CROSS_COMPILE}" == "ON" ] ; then
     COMPLIER_FLAG="arm"
@@ -46,10 +46,10 @@ echo -e "\e[1m\e[34m[Bash-Compiler-${TIME}]: Building.... \e[0m"
 
 LIB_PATH=""
 APP_PATH=""
-if [ "${MODEL_FLAG,,}" == "yolov5"  ]; then
+if [ "${MODEL_FLAG}" == "yolov5"  ]; then
     LIB_PATH=app_yolo
     APP_PATH=yolov5
-elif [ "${MODEL_FLAG,,}" == "yolox" ]; then
+elif [ "${MODEL_FLAG}" == "yolox" ]; then
     LIB_PATH=app_yolo
     APP_PATH=yolox
 fi
@@ -61,7 +61,7 @@ make -j8 && cd ..
 if [ "${PACK_FLAG}" == "ON" ] ; then
 
     # install
-    INSTALL_PATH=${HOME_DIR}/install_${PLATFORM_FLAG,,}/${MODEL_FLAG,,}_bin
+    INSTALL_PATH=${HOME_DIR}/install_${PLATFORM_FLAG,,}/${MODEL_FLAG}_bin
     if [ -d "$INSTALL_PATH" ]; then
         echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: $INSTALL_PATH  \e[0m"
     else 
@@ -70,20 +70,20 @@ if [ "${PACK_FLAG}" == "ON" ] ; then
 
     if [ "${PC_X86_FLAG}" == "ON" ]; then
         rm -rf ${INSTALL_PATH}/x86
-        mv ${HOME_DIR}/modules/${LIB_PATH}/${MODEL_FLAG,,}_bin/x86 ${INSTALL_PATH}
-        mv ${HOME_DIR}/test/${APP_PATH}/${MODEL_FLAG,,}_bin/x86/*  ${INSTALL_PATH}/x86
+        mv ${HOME_DIR}/modules/${LIB_PATH}/${MODEL_FLAG}_bin/x86 ${INSTALL_PATH}
+        mv ${HOME_DIR}/test/${APP_PATH}/${MODEL_FLAG}_bin/x86/*  ${INSTALL_PATH}/x86
 
     elif [ "${CROSS_COMPILE}" == "ON" ] ; then
         rm -rf ${INSTALL_PATH}/arm
-        mv ${HOME_DIR}/modules/${LIB_PATH}/${MODEL_FLAG,,}_bin/arm ${INSTALL_PATH}
-        mv ${HOME_DIR}/test/${APP_PATH}/${MODEL_FLAG,,}_bin/arm/*  ${INSTALL_PATH}/arm
+        mv ${HOME_DIR}/modules/${LIB_PATH}/${MODEL_FLAG}_bin/arm ${INSTALL_PATH}
+        mv ${HOME_DIR}/test/${APP_PATH}/${MODEL_FLAG}_bin/arm/*  ${INSTALL_PATH}/arm
     fi
 
-    rm -rf ${HOME_DIR}/modules/${LIB_PATH}/${MODEL_FLAG,,}_bin
-    rm -rf ${HOME_DIR}/test/${APP_PATH}/${MODEL_FLAG,,}_bin
+    rm -rf ${HOME_DIR}/modules/${LIB_PATH}/${MODEL_FLAG}_bin
+    rm -rf ${HOME_DIR}/test/${APP_PATH}/${MODEL_FLAG}_bin
 
     cp -r ${HOME_DIR}/scripts/run.sh ${HOME_DIR}/install_${PLATFORM_FLAG,,}
-    echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: copy ${COMPLIER_FLAG} ${MODEL_FLAG,,} bin to install  \e[0m"
+    echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: copy ${COMPLIER_FLAG} ${MODEL_FLAG} bin to install  \e[0m"
 
 else
     echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: pack flag false  \e[0m"

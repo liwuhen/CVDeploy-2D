@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-4b2dab973dfe223767b0c741c01e55fd modules/app_yolo/CMakeFiles/yolov5_gpu_decode.dir/architecture/cuda/yolov5_gpu_decode_generated_gpu_decode.cu.o
-5dd116a1b7cdf1c6dd2ce5f5b51d266c modules/app_yolo/CMakeFiles/yolov5_gpu_proprecessor.dir/architecture/cuda/yolov5_gpu_proprecessor_generated_warpaffine.cu.o

@@ -9,7 +9,7 @@ __device__ void affine_project(Matrix3f affineMatrix_inv, int x, int y, float* p
 static __global__ void warp_affine_bilinear_kernel(
     uint8_t* src, int batch, int src_line_size, int src_width, int src_height, 
     float* dst, int dst_width, int dst_height, Matrix3f affineMatrix_inv, 
-    uint8_t const_value_st)
+    uint8_t const_value_st, AppYolo app_mode)
 {
     int dx = blockDim.x * blockIdx.x + threadIdx.x;
     int dy = blockDim.y * blockIdx.y + threadIdx.y;
@@ -68,40 +68,43 @@ static __global__ void warp_affine_bilinear_kernel(
         c2 = floorf(w1 * v1[2] + w2 * v2[2] + w3 * v3[2] + w4 * v4[2] + 0.5f);   // r
     }
 
-    // normalisation
-    // c0 = (c0 / 255.0f);
-    // c1 = (c1 / 255.0f);
-    // c2 = (c2 / 255.0f);
 
-    // bgr to rgb
-    // int area = dst_width * dst_height;
-    // float* pdst_b = dsts + area * 0 + dy * dst_width + dx;
-    // float* pdst_g = dsts + area * 1 + dy * dst_width + dx;
-    // float* pdst_r = dsts + area * 2 + dy * dst_width + dx;
-    // *pdst_r = c0;
-    // *pdst_g = c1;
-    // *pdst_b = c2;
+    if ( app_mode == AppYolo::YOLOV5_MODE ) {
+        // normalisation
+        c0 = (c0 / 255.0f);
+        c1 = (c1 / 255.0f);
+        c2 = (c2 / 255.0f);
 
-    int area = dst_width * dst_height;
-    float* pdst_b = dsts + area * 0 + dy * dst_width + dx;
-    float* pdst_g = dsts + area * 1 + dy * dst_width + dx;
-    float* pdst_r = dsts + area * 2 + dy * dst_width + dx;
-    *pdst_r = c2;
-    *pdst_g = c1;
-    *pdst_b = c0;
+        // bgr to rgb
+        int area = dst_width * dst_height;
+        float* pdst_b = dsts + area * 0 + dy * dst_width + dx;
+        float* pdst_g = dsts + area * 1 + dy * dst_width + dx;
+        float* pdst_r = dsts + area * 2 + dy * dst_width + dx;
+        *pdst_r = c0;
+        *pdst_g = c1;
+        *pdst_b = c2;
+    } else if ( app_mode == AppYolo::YOLOX_MODE )
+    {
+        int area = dst_width * dst_height;
+        float* pdst_b = dsts + area * 0 + dy * dst_width + dx;
+        float* pdst_g = dsts + area * 1 + dy * dst_width + dx;
+        float* pdst_r = dsts + area * 2 + dy * dst_width + dx;
+        *pdst_r = c2;
+        *pdst_g = c1;
+        *pdst_b = c0;
+    }
 }
 
 void warp_affine_bilinear(
-    uint8_t* src, int batch, int src_line_size, int src_width, int src_height, 
-    float* dst, int dst_width, int dst_height, Matrix3f affineMatrix_inv, 
-    uint8_t const_value, cudaStream_t stream) 
+    uint8_t* src, int batch, InfertMsg& input_msg, float* dst, int dst_width, int dst_height,
+    uint8_t const_value, cudaStream_t stream, AppYolo app_mode) 
 {
 
     dim3 block_size(16, 16, 4); // blocksize最大就是1024
     dim3 grid_size((dst_width + 15) / 16, (dst_height + 15) / 16, (batch + 3) / 4);
 
     warp_affine_bilinear_kernel <<<grid_size, block_size, 0, stream>>> (
-        src, batch, src_line_size, src_width, src_height, 
-        dst, dst_width, dst_height, affineMatrix_inv, const_value
+        src, batch, input_msg.width * 3, input_msg.width, input_msg.height, 
+        dst, dst_width, dst_height, input_msg.affineMatrix_inv, const_value, app_mode
     );
 }

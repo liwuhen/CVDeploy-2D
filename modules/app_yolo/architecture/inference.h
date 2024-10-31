@@ -25,7 +25,6 @@
 #include "module.h"
 #include "common.hpp"
 #include "std_time.h"
-#include "std_cmake.h"
 #include "trt_infer.h"
 #include "parseconfig.h"
 #include "preprocessor.h"

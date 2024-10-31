@@ -86,14 +86,14 @@ bool PreProcessor::DataResourceRelease() {}
  * @description: Inference.
 */
 bool PreProcessor::Inference(InfertMsg& input_msg, 
-        int batch, float * dstimg, DeviceMode inferMode, cudaStream_t stream)
+        float * dstimg, DeviceMode inferMode, cudaStream_t stream)
 {
     CalAffineMatrix(input_msg);
 
     switch (inferMode)
     {
     case DeviceMode::GPU_MODE:
-        if ( !GpuPreprocessor(input_msg, batch, dstimg, stream) ) { return false; }
+        if ( !GpuPreprocessor(input_msg, dstimg, stream) ) { return false; }
         break;
     case DeviceMode::CPU_MODE:
         if ( !CpuPreprocessor(input_msg.image, input_msg.timestamp, dstimg, stream) ); { return false; }
@@ -109,14 +109,21 @@ bool PreProcessor::Inference(InfertMsg& input_msg,
  * @description: Gpu preprocessor.
 */
 bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg, 
-        int batch, float * dstimg, cudaStream_t stream) 
+        float * dstimg, cudaStream_t stream) 
 {
     checkRuntime(cudaMemcpy(input_data_device_, input_msg.image.data,\
             input_msg.img_size * sizeof(uint8_t), cudaMemcpyHostToDevice));
 
-    warp_affine_bilinear(input_data_device_, batch, input_msg.width * 3, input_msg.width, input_msg.height, 
-                         dstimg, parsemsgs_->dst_img_w_, parsemsgs_->dst_img_h_, input_msg.affineMatrix_inv,
-                         114, nullptr);
+    if ( std::string(MODEL_FLAG) == "yolov5" ) {
+        warp_affine_bilinear(input_data_device_, parsemsgs_->batchsizes_, input_msg, dstimg,
+                             parsemsgs_->dst_img_w_, parsemsgs_->dst_img_h_, 114, nullptr, AppYolo::YOLOV5_MODE);
+    } else if ( std::string(MODEL_FLAG) == "yolox" )
+    {
+        warp_affine_bilinear(input_data_device_, parsemsgs_->batchsizes_, input_msg, dstimg,
+                             parsemsgs_->dst_img_w_, parsemsgs_->dst_img_h_, 114, nullptr, AppYolo::YOLOX_MODE);
+    } else {
+
+    }
 
     return true;
 }

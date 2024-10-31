@@ -38,8 +38,8 @@ function parse_args()
     for opt in "$@" ; do
         # model
         for model in "${MODEL_SETS[@]}"; do
-            if [ "$opt" == "$model" ]; then
-                MODEL_FLAG=${opt}
+            if [ "${opt,,}" == "$model" ]; then
+                MODEL_FLAG=${opt,,}
                 echo -e "\e[1m\e[34m[Bash-Model-${TIME}]: $opt in model sets \e[0m"
                 MODEL_BOOL_FLAG=True
                 break

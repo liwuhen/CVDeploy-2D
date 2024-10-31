@@ -25,9 +25,6 @@ namespace hpc {
 namespace common {
 
 #define MODEL_FLAG "@MODEL_FLAG@"
-#define PROCESSOR_OUTPUT_DIR "@PROCESSOR_OUTPUT_DIR@"
-#define POSTPRECESSOR_OUTPUT_DIR "@POSTPRECESSOR_OUTPUT_DIR@"
-
 
 } //namespace common
 } //namespace hpc

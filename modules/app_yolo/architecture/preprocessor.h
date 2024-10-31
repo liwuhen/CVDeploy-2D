@@ -35,6 +35,7 @@
 #include "utils.hpp"
 #include "common.hpp"
 #include "enum_msg.h"
+#include "std_cmake.h"
 #include "parseconfig.h"
 #include "warpaffine.hpp"
 #include "task_struct.hpp"
@@ -109,7 +110,7 @@ public:
      * @return    bool.
      */
     bool Inference(InfertMsg& input_msg, 
-            int batch, float * dstimg, DeviceMode inferMode, cudaStream_t stream); 
+            float * dstimg, DeviceMode inferMode, cudaStream_t stream); 
 
 private: 
     
@@ -140,7 +141,7 @@ private:
      * @return    bool.
      */
     bool GpuPreprocessor(InfertMsg& input_msg, 
-            int batch, float * dstimg, cudaStream_t stream);
+            float * dstimg, cudaStream_t stream);
 
     /**
      * @brief     Cpu preprocessor.

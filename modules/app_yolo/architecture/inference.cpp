@@ -48,12 +48,6 @@ bool InferenceEngine::Init()
         checkRuntime(cudaMalloc(&output_img_device_, sizeof(float) * parsemsgs_->dstimg_size_));
     }
 
-    std::string model_flag = MODEL_FLAG;
-    std::string processor_dir = PROCESSOR_OUTPUT_DIR;
-
-    GLOG_INFO("====[Init]: model_flag: " + model_flag);
-    GLOG_INFO("====[Init]: processor_dir: " + processor_dir);
-
     GLOG_INFO("[Init]: Inference moudule init");
     return true;
 }
@@ -164,8 +158,8 @@ bool InferenceEngine::Inference()
         GLOG_INFO("Process frame: " + std::to_string(input_msg_.frame_id));
 
         // preprocessor
-        if ( !preProcessor_->Inference(input_msg_, parsemsgs_->batchsizes_, \
-            output_img_device_, DeviceMode::GPU_MODE, nullptr) ) {
+        if ( !preProcessor_->Inference(input_msg_, \
+                    output_img_device_, DeviceMode::GPU_MODE, nullptr) ) {
             GLOG_ERROR("PreProcessor module error. ");
             return false;
         }

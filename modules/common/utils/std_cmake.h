@@ -25,9 +25,6 @@ namespace hpc {
 namespace common {
 
 #define MODEL_FLAG "yolov5"
-#define PROCESSOR_OUTPUT_DIR ""
-#define POSTPRECESSOR_OUTPUT_DIR ""
-
 
 } //namespace common
 } //namespace hpc

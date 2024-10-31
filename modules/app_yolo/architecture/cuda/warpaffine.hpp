@@ -22,10 +22,13 @@
 #include <iostream>
 #include <cuda_runtime.h>
 #include "Eigen/Dense"
+#include "enum_msg.h"
+#include "task_struct.hpp"
 
 #define GPU_BLOCK_THREADS  512
 
 using namespace Eigen;
+using namespace hpc::common;
 
 struct Norm
 {
@@ -45,8 +48,7 @@ static dim3 block_dims(int numJobs)
 }
 
 void warp_affine_bilinear(
-    uint8_t* src, int batch, int src_line_size, int src_width, int src_height, 
-    float* dst, int dst_width, int dst_height, Matrix3f affineMatrix_inv, 
-    uint8_t const_value, cudaStream_t stream); 
+    uint8_t* src, int batch, InfertMsg& input_msg, float* dst, int dst_width, int dst_height,
+    uint8_t const_value, cudaStream_t stream, AppYolo mode); 
 
 #endif // APP_YOLO_WARPAFFINE_H__

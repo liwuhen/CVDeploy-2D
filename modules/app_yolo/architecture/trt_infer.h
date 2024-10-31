@@ -33,6 +33,7 @@
 #include "utils.hpp"
 #include "enum_msg.h"
 #include "common.hpp"
+#include "std_cmake.h"
 #include "std_buffer.h"
 #include "parseconfig.h"
 #include "task_struct.hpp"

@@ -256,6 +256,8 @@ bool TrtInfer::ParseModel()
         engine_name_size_.emplace(name, make_pair(i, size));
     }
 
+    GLOG_INFO("[Model]: " + std::string(MODEL_FLAG));
+
     return true;
 }
 
