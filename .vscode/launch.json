@@ -5,14 +5,14 @@
             "name": "program-debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/install_nvidia/yolov5_bin/x86/yolov5_project_exe",
+            "program": "${workspaceFolder}/install_nvidia/yolox_bin/x86/yolox_project_exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/install_nvidia/yolov5_bin/x86",
+            "cwd": "${workspaceFolder}/install_nvidia/yolox_bin/x86",
             "environment": [
                 {
                     "name": "LD_LIBRARY_PATH",
-                    "value": "${workspaceFolder}/install_nvidia/yolov5_bin/x86/proprecessor:${workspaceFolder}/install_nvidia/yolov5_bin/x86/libs:${workspaceFolder}/install_nvidia/yolov5_bin/x86/third_party/opencv:/home/x86_toolchain/tensorrt/lib:${workspaceFolder}/install_nvidia/yolov5_bin/x86/third_party/zbar:${env:LD_LIBRARY_PATH}"
+                    "value": "${workspaceFolder}/install_nvidia/yolox_bin/x86/proprecessor:${workspaceFolder}/install_nvidia/yolox_bin/x86/libs:${workspaceFolder}/install_nvidia/yolox_bin/x86/third_party/opencv:/home/x86_toolchain/tensorrt/lib:${env:LD_LIBRARY_PATH}"
                 }
             ],
             "externalConsole": false,

@@ -47,10 +47,10 @@ echo -e "\e[1m\e[34m[Bash-Compiler-${TIME}]: Building.... \e[0m"
 LIB_PATH=""
 APP_PATH=""
 if [ "${MODEL_FLAG,,}" == "yolov5"  ]; then
-    LIB_PATH=app_yolo/yolov5
+    LIB_PATH=app_yolo
     APP_PATH=yolov5
 elif [ "${MODEL_FLAG,,}" == "yolox" ]; then
-    LIB_PATH=app_yolo/yolox
+    LIB_PATH=app_yolo
     APP_PATH=yolox
 fi
 

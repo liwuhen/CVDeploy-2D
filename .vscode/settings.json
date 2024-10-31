@@ -94,6 +94,7 @@
         "semaphore": "cpp",
         "stop_token": "cpp",
         "__string": "cpp",
-        "slist": "cpp"
+        "slist": "cpp",
+        "*.in": "cpp"
     }
 }

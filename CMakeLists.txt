@@ -14,10 +14,15 @@ if(${ENABLE_CROSSCOMPILE})
     include(${CMAKE_PATH}/platforms/linux/arm-toolchain.cmake)
 endif()
 
+configure_file(
+    "${CMAKE_CURRENT_LIST_DIR}/modules/common/utils/std_cmake.h.in"
+    "${CMAKE_CURRENT_LIST_DIR}/modules/common/utils/std_cmake.h"
+)
+
+
 include_directories(
     ${CMAKE_CURRENT_LIST_DIR}/modules
-    ${CMAKE_CURRENT_LIST_DIR}/modules/app_yolo/yolov5
-    ${CMAKE_CURRENT_LIST_DIR}/modules/app_yolo/yolox
+    ${CMAKE_CURRENT_LIST_DIR}/modules/app_yolo
     ${CMAKE_CURRENT_LIST_DIR}/modules/common/utils
     ${CMAKE_CURRENT_LIST_DIR}/modules/common/logging
     ${CMAKE_CURRENT_LIST_DIR}/modules/common/msg_img
@@ -25,5 +30,5 @@ include_directories(
     ${CMAKE_CURRENT_LIST_DIR}/modules/common/msg_struct
 )
 
-add_subdirectory(modules/app_yolo/yolov5)
-add_subdirectory(test/yolov5)
+add_subdirectory(modules/app_yolo)
+add_subdirectory(test/${MODEL_FLAG})

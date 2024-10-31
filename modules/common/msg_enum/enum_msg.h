@@ -1,8 +1,7 @@
 /* ==================================================================
 * Copyright (c) 2024, LiWuHen.  All rights reserved.
 *
-* Licensed under the Apache License, Version 2.0 (the 
-);
+* Licensed under the Apache License, Version 2.0 
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
@@ -40,6 +39,11 @@ typedef enum class device_mode_ : uint8_t {
     GPU_MODE = 0, 
     CPU_MODE
 }DeviceMode;
+
+typedef enum class app_yolo_ : uint8_t { 
+    YOLOV5_MODE = 0, 
+    YOLOX_MODE
+}AppYolo;
 
 }
 }

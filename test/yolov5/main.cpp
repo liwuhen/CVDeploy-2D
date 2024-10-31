@@ -21,7 +21,7 @@
 #include "std_time.h"
 #include "common/appconfig.h"
 #include "task_struct.hpp"
-#include "interface_v5.h"
+#include "interface.h"
 
 using namespace hpc::appinfer;
 using namespace hpc::common;
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
         path =  path.substr(0, pos);
     }
 
-    std::string file_path_ = path + "/config/" + "yolov5_config.yaml";
+    std::string file_path_ = path + "/config/yaml/" + "yolov5_config.yaml";
     std::shared_ptr<InterfaceYolo> inference = InterfaceYolo::getInstance();
     inference->InitConfig(path, file_path_);
     inference->Init();
