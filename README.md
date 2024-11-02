@@ -96,7 +96,7 @@ bash ./install_nvidia/run.sh yolov5 nvidia -arm
 ```
 
 # ![Contribute](https://img.shields.io/badge/how%20to%20contribute-project-brightgreen) Contributing
-Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./doc/CONTRIBUTING.md) for the contributing guideline.
+Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./doc/CONTRIBUTING.md) for the contributing guideline.We encourage you to join the effort and contribute feedback, ideas, and code. You can participate in Working Groups, Working Groups have most of their discussions on [Slack](https://app.slack.com/client/T07U5CEEXCP/C07UKUA9TCJ) .
 
 
 # References
