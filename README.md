@@ -95,6 +95,10 @@ bash ./install_nvidia/run.sh yolov5 nvidia
 bash ./install_nvidia/run.sh yolov5 nvidia -arm
 ```
 
+# ![Contribute](https://img.shields.io/badge/how%20to%20contribute-project-brightgreen) Contributing
+Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./doc/CONTRIBUTING.md) for the contributing guideline.
+
+
 # References
 - [Yolov5](https://github.com/ultralytics/yolov5)
 - [Yolox](https://github.com/Megvii-BaseDetection/YOLOX)
