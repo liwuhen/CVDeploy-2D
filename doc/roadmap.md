@@ -10,3 +10,5 @@ The flow of the roadmap is shown below
 
 ![Framework Flow](./roadmap.png)
 
+## 2. Third Party Library
+For engineered deployments, consider versions that remove opencv dependencies.
