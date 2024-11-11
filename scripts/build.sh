@@ -20,7 +20,7 @@
 
 set -e
 
-. ./scripts/bash_config.sh
+. ./scripts/config.sh
 
 parse_args "$@"
 CMAKE_DIR=${HOME_DIR}
@@ -44,12 +44,10 @@ elif [ "${PC_X86_FLAG}" == "ON" ] ; then
     if [ "${PLATFORM_FLAG}" == "NVIDIA" ] ; then
         BUILD_DIR=${HOME_DIR}/build_nv_x86
         COMM_ARGS="${COMM_ARGS}"
-        # export LD_LIBRARY_PATH=${YUNOS_PATH}/arch-x86_64/usr/lib64/:${LD_LIBRARY_PATH}
     
     elif [ "${PLATFORM_FLAG}" == "QNN" ] ; then
         BUILD_DIR=${HOME_DIR}/build_qnn_x86
         COMM_ARGS="${COMM_ARGS}"
-        # export LD_LIBRARY_PATH=${YUNOS_PATH}/arch-x86_64/usr/lib64/:${LD_LIBRARY_PATH}
     fi
 fi
 
