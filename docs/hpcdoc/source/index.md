@@ -1,18 +1,17 @@
 <!--
-Copyright (c) ONNX Project Contributors
+Copyright (c) Model Infer Project Contributors
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 (l-main-doc-page)=
 
-# ONNX documentation
+# Model Infer documentation
 
 ```{toctree}
 :maxdepth: 2
 
 intro/index
-api/index
-technical/index
-repo-docs/index
+algorithm/index
+platform/index
 ```

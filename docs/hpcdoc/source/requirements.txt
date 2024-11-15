@@ -1,10 +1,7 @@
-
 furo
 markupsafe
 matplotlib
 myst-parser[linkify]
-onnx
-onnxruntime<1.20
 pillow
 pydot
 sphinx-copybutton
