@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="./docs/images/model-infer-dark-color.png" width="500" height="200">
+
+</div>
+
 # AI model deployment based on NVIDIA and Qualcomm platforms
 
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)
