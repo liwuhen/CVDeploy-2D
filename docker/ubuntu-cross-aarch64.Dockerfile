@@ -51,7 +51,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bzip2 \
     unzip \
     libgtk2.0-dev\
-    pkg-config \
     libavcodec-dev \
     libavformat-dev \
     libswscale-dev \ 
@@ -63,7 +62,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libdc1394-22-dev \
     build-essential
 
-RUN cd /usr/local/bin &&\
+RUN cd /usr/bin &&\
     ln -s /usr/bin/python3 python &&\
     ln -s /usr/bin/pip3 pip
 RUN pip3 install --upgrade pip
