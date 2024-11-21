@@ -18,17 +18,17 @@ target_link_libraries(${PROJECT_NAME} opencv_core opencv_imgcodecs
                       opencv_imgproc opencv_highgui)
 
 set(EXECUTABLE_OUTPUT_PATH
-    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPLIER_DIR_FLAG})
+    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPILER_DIR_FLAG})
 
 file(
   COPY ${CMAKE_PATH}/modules/config/data
   DESTINATION
-    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPLIER_DIR_FLAG}/config)
+    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPILER_DIR_FLAG}/config)
 file(
   COPY ${CMAKE_PATH}/modules/config/yaml/${MODEL_FLAG}/
   DESTINATION
-    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPLIER_DIR_FLAG}/config/yaml)
+    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPILER_DIR_FLAG}/config/yaml)
 file(
   COPY ${CMAKE_PATH}/modules/config/model/${MODEL_FLAG}/
   DESTINATION
-    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPLIER_DIR_FLAG}/config/model)
+    ${PROJECT_SOURCE_DIR}/${MODEL_FLAG}_bin/${COMPILER_DIR_FLAG}/config/model)

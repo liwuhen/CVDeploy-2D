@@ -28,7 +28,7 @@ BUILD_DIR=${HOME_DIR}/build_clang
 COMM_ARGS=" -DCMAKE_BUILD_TYPE=${TBUILD_VERSION} -DMODEL_FLAG=${MODEL_FLAG}"
 
 if [ "${CROSS_COMPILE}" == "ON" ] ; then
-    COMPLIER_FLAG="arm"
+    COMPILER_FLAG="arm"
     COMM_ARGS="${COMM_ARGS} -DENABLE_CROSSCOMPILE=ON"
     case ${PLATFORM_FLAG} in
         QNN)
@@ -100,7 +100,7 @@ if [ "${PACK_FLAG}" == "ON" ] ; then
     rm -rf "${HOME_DIR}"/test/"${APP_PATH}"/"${MODEL_FLAG}"_bin
 
     cp -r "${HOME_DIR}"/scripts/run.sh "${HOME_DIR}"/install_"${PLATFORM_FLAG,,}"
-    echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: copy ${COMPLIER_FLAG} ${MODEL_FLAG} bin to install  \e[0m"
+    echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: copy ${COMPILER_FLAG} ${MODEL_FLAG} bin to install  \e[0m"
 
 else
     echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: pack flag false  \e[0m"
