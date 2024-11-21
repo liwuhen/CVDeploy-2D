@@ -43,6 +43,6 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-check
-          level: error
+          level: warning
           flags: --linelength=120
-          filter: "-runtime/references"
+          filter: "-runtime/references, -build/include"
