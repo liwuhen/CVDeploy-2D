@@ -61,7 +61,8 @@ static const char* cocolabels[] = {"person",        "bicycle",      "car",
                                    "oven",          "toaster",      "sink",
                                    "refrigerator",  "book",         "clock",
                                    "vase",          "scissors",     "teddy bear",
-                                   "hair drier",    "toothbrush"};
+                                   "hair drier",    "toothbrush"
+};
 
 // hsv 转 bgr
 static std::tuple<uint8_t, uint8_t, uint8_t> hsv2bgr(float h, float s, float v) {
@@ -114,7 +115,6 @@ static std::tuple<uint8_t, uint8_t, uint8_t> hsv2bgr(float h, float s, float v) 
 
 static std::tuple<uint8_t, uint8_t, uint8_t> random_color(int id) {
   float h_plane = ((((unsigned int)id << 2) ^ 0x937151) % 100) / 100.0f;
-  ;
   float s_plane = ((((unsigned int)id << 3) ^ 0x315793) % 100) / 100.0f;
   return hsv2bgr(h_plane, s_plane, 1);
 }

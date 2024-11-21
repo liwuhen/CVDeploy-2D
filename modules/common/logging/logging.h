@@ -17,7 +17,6 @@
 #ifndef TENSORRT_LOGGING_H
 #define TENSORRT_LOGGING_H
 
-//#include "NvInferRuntimeCommon.h"
 #include <cassert>
 #include <ctime>
 #include <iomanip>
@@ -188,7 +187,7 @@ class LogStreamConsumer : protected LogStreamConsumerBase, public std::ostream {
 
 class Logger : public nvinfer1::ILogger {
  public:
-  Logger(Severity severity = Severity::kWARNING) : mReportableSeverity(severity) {}
+  explicit Logger(Severity severity = Severity::kWARNING) : mReportableSeverity(severity) {}
 
   //!
   //! \enum TestResult

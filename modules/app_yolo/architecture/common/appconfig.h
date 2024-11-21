@@ -85,7 +85,7 @@ class AppConfig {
   REG_YAML_VAR(std::vector<int>, predict_dim_);
 
  protected:
-  AppConfig(const std::string& config_filename);
+  explicit AppConfig(const std::string& config_filename);
   ~AppConfig() {}
   std::string config_filename_;
 

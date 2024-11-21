@@ -65,7 +65,7 @@ bool DecodeProcessor::SetParam(shared_ptr<ParseMsgs>& parse_msgs) {
   if (parse_msgs != nullptr) {
     this->parsemsgs_ = parse_msgs;
   }
-  imgshape_["dst"] = make_pair<int&, int&>(parsemsgs_->dst_img_h_, parsemsgs_->dst_img_w_);
+  imgshape_["dst"] = make_pair(parsemsgs_->dst_img_h_, parsemsgs_->dst_img_w_);
 
   GLOG_INFO("[SetParam]: DecodeProcessor module set param ");
   return true;
@@ -81,7 +81,7 @@ bool DecodeProcessor::DataResourceRelease() {}
  */
 bool DecodeProcessor::Inference(float* predict, InfertMsg& infer_msg,
                                 std::shared_ptr<InferMsgQue>& bboxQueue) {
-  imgshape_["src"] = make_pair<int, int>(infer_msg.height, infer_msg.width);
+  imgshape_["src"] = make_pair(infer_msg.height, infer_msg.width);
 
   vector<Box> box_result;
   CpuDecode(predict, box_result);

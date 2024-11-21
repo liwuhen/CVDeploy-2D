@@ -42,7 +42,7 @@ class InterfaceYolo {
     return instance;
   }
 
-  ~InterfaceYolo(){};
+  ~InterfaceYolo() {}
 
   /**
    * @brief     init．

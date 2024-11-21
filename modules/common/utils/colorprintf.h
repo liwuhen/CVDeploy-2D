@@ -25,7 +25,7 @@
 namespace hpc {
 namespace common {
 
-//颜色宏定义
+// 颜色宏定义
 #define NONEC "\033[0m"
 #define RED "\033[1;32;31m"
 #define LIGHT_RED "\033[1;31m"

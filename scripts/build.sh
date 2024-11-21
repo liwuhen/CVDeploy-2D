@@ -72,7 +72,7 @@ elif [ "${MODEL_FLAG}" == "yolox" ]; then
 fi
 
 # compiler
-cmake "${COMM_ARGS}" "${CMAKE_DIR}"
+cmake ${COMM_ARGS} "${CMAKE_DIR}"
 make -j8 && cd ..
 
 if [ "${PACK_FLAG}" == "ON" ] ; then

@@ -39,7 +39,7 @@ struct Norm {
 
 static dim3 grid_dims(int numJobs) {
   int numBlockThreads = numJobs < GPU_BLOCK_THREADS ? numJobs : GPU_BLOCK_THREADS;
-  return dim3(((numJobs * 10 + numBlockThreads - 1) / (float)numBlockThreads));
+  return dim3(((numJobs * 10 + numBlockThreads - 1) / static_cast<float>(numBlockThreads)));
 }
 
 static dim3 block_dims(int numJobs) {

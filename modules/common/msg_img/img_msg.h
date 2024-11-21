@@ -42,18 +42,18 @@ class ImageInfos {
     frame_id_ = 0;
     timestamp_ = 0;
     image_ = cv::Mat();
-  };
-  ~ImageInfos(){};
+  }
+  ~ImageInfos() {}
 
   bool DeepCopy(const ImageInfos* src) {
     this->image_ = src->image_.clone();
     return true;
-  };
+  }
 
   bool MoveCopy(const ImageInfos* src) {
     this->image_ = std::move(src->image_);
     return true;
-  };
+  }
 
  public:
   uint16_t width_;

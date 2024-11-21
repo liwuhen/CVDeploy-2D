@@ -34,7 +34,7 @@ namespace common {
 template <typename T>
 class MsgQueue {
  public:
-  MsgQueue(int length) { length_ = std::max(1, length); };
+  explicit MsgQueue(int length) { length_ = std::max(1, length); }
   ~MsgQueue() = default;
   void Push(const T& message);
   int Size() const;
@@ -57,7 +57,7 @@ template <typename T>
 void MsgQueue<T>::Push(const T& message) {
   std::unique_lock<std::mutex> lock(mutex_);
   queue_.push(message);
-  while ((int)queue_.size() > length_) {
+  while (static_cast<int>(queue_.size()) > length_) {
     queue_.pop();
   }
   lock.unlock();
@@ -100,7 +100,7 @@ void MsgQueue<T>::Clear() {
   while (!queue_.empty()) {
     queue_.pop();
   }
-};
+}
 
 }  // namespace common
 }  // namespace hpc

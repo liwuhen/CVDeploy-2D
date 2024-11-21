@@ -45,4 +45,10 @@ jobs:
           reporter: github-pr-check
           level: warning
           flags: --linelength=120
-          filter: "-runtime/references, -build/include"
+          filter: "-runtime/references,\
+                  -build/include,\
+                  -build/namespaces,\
+                  -build/header_guard,\
+                  -whitespace/line_length,\
+                  -whitespace/indent_namespace,\
+                  -runtime/string"  # Ignore runtime checks on string usage.

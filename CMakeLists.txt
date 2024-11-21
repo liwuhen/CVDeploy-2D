@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10.2)
 
 option(ENABLE_CROSSCOMPILE "Enable crosscomplile for arm platform" OFF)
-option(MODEL_FLAG "Enable crosscomplile model type")
+set(MODEL_FLAG
+    "default"
+    CACHE STRING "Model configuration flag")
 
 add_definitions("-Wall -g")
 add_compile_options(-std=c++11)

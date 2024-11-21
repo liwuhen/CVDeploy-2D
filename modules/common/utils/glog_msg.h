@@ -68,7 +68,7 @@ class GlogMsg {
   ~GlogMsg() {
     google::FlushLogFiles(google::GLOG_INFO);
     google::ShutdownGoogleLogging();
-  };
+  }
   bool init_ = false;
   std::mutex glog_mutex_;
   std::shared_ptr<ParseMsgs> ParseMsgs_;

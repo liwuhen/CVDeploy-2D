@@ -51,13 +51,13 @@ struct Box {
     this->confidence = obj.confidence;
     this->label = obj.label;
     return *this;
-  };
+  }
 };
 
 struct InfertMsg {
   InfertMsg() : width(0), height(0), frame_id(0), timestamp(0), img_size(0) {
     this->image = cv::Mat();
-  };
+  }
 
   InfertMsg operator=(const InfertMsg& obj) {
     this->width = obj.width;
@@ -73,7 +73,7 @@ struct InfertMsg {
       this->bboxes.emplace_back(box);
     }
     return *this;
-  };
+  }
 
  public:
   uint32_t width;
@@ -96,10 +96,10 @@ struct CVImage {
   std::vector<uint8_t> data;  // 存储连续的像素值
 
   CVImage();
-  CVImage(int width, int height, int channel)
-      : img_width(width), img_height(height), img_channel(channel), img_size(0){};
+  CVImage(int width, int height, int channel) : img_width(width), \
+    img_height(height), img_channel(channel), img_size(0) {}
 
-  ~CVImage(){};
+  ~CVImage() {}
 
   CVImage operator=(const CVImage& obj) {
     this->img_width = obj.img_width;
@@ -110,7 +110,7 @@ struct CVImage {
       std::memcpy(data.data(), obj.data.data(), length);  // 拷贝数据
     }
     return *this;
-  };
+  }
 
   // 指针类型
   void setDataFromArray(const uint8_t* obj, int size) {
@@ -118,7 +118,7 @@ struct CVImage {
     if (obj != nullptr && size <= img_size) {
       std::memcpy(data.data(), obj, size);  // 拷贝数据
     }
-  };
+  }
 };
 
 using InputMsgQue = MsgQueue<InfertMsg>;

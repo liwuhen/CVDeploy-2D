@@ -101,7 +101,7 @@ bool TrtInfer::Inference(float* output_img_device) {
                           output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t),
                           cudaMemcpyDeviceToDevice));
 
-  bool success = execution_context_->enqueueV2((void**)gpu_buffers_, stream_, nullptr);
+  bool success = execution_context_->enqueueV2(reinterpret_cast<void**>(gpu_buffers_), stream_, nullptr);
   if (!success) {
     LOG(ERROR) << " Inference failed ";
     return false;
@@ -236,8 +236,8 @@ bool TrtInfer::ParseModel() {
     string name = execution_context_->getEngine().getBindingName(i);
     auto dim = execution_context_->getBindingDimensions(i);
 
-    switch (execution_context_->getEngine().bindingIsInput(i))  // < tensorrt 8.5
-    {
+    // < tensorrt 8.5
+    switch (execution_context_->getEngine().bindingIsInput(i)) {
       case false:
         out_size++;
         binding_names_["output"].push_back(name);
@@ -323,7 +323,7 @@ std::vector<uint8_t> TrtInfer::LoadFile(const string& file) {
     in.seekg(0, ios::beg);
     data.resize(length);
 
-    in.read((char*)&data[0], length);
+    in.read(reinterpret_cast<char*>(&data[0]), length);
   }
   in.close();
   return data;

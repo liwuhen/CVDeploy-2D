@@ -181,7 +181,7 @@ bool InferenceEngine::InferenceV1() {
   LOG(INFO) << " Begin inferenceV1 ... ";
   auto image = cv::imread(parsemsgs_->img_path_);
   auto data = trtInfer_->LoadFile(parsemsgs_->predict_path_);
-  float* ptr = (float*)data.data();
+  float* ptr = reinterpret_cast<float*>(data.data());
   int nelem = data.size() / sizeof(float);
   int nrows = nelem / 6.0;  // 行数，预测的 object 的数量
 

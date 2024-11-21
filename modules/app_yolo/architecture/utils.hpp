@@ -75,7 +75,7 @@ inline const char* severity_string(nvinfer1::ILogger::Severity t) {
 
 class TRTLogger : public nvinfer1::ILogger {
  public:
-  virtual void log(Severity severity, nvinfer1::AsciiChar const* msg) noexcept override {
+  void log(Severity severity, nvinfer1::AsciiChar const* msg) noexcept override {
     if (severity <= Severity::kINFO) {
       // 打印带颜色的字符，格式如下：
       // printf("\033[47;33m 打印的文本\033[0m");

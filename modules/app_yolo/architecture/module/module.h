@@ -41,7 +41,7 @@ using namespace hpc::common;
  */
 class InferModuleBase {
  public:
-  InferModuleBase(){};
+  InferModuleBase() {}
   virtual ~InferModuleBase() = default;
 
   virtual bool Init() = 0;
