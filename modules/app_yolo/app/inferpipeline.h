@@ -23,6 +23,9 @@
 #include <glog/logging.h>
 
 #include <iostream>
+#include <map>
+#include <memory>
+#include <vector>
 
 #include "common.hpp"
 #include "glog_msg.h"

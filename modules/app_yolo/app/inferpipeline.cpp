@@ -74,7 +74,7 @@ bool InferPipeline::Start() {
     if (!module.second->RunStart()) {
       GLOG_ERROR(module.first << " Module start failed ");
       return false;
-    };
+    }
   }
 
   GLOG_INFO("[Start]: ALL module start ");
@@ -89,7 +89,7 @@ bool InferPipeline::Stop() {
     if (!module.second->RunStop()) {
       GLOG_ERROR(module.first << " Module stop failed ");
       return false;
-    };
+    }
   }
 
   GLOG_INFO("[Stop]: ALL module stop ");
@@ -104,7 +104,7 @@ bool InferPipeline::Release() {
     if (!module.second->RunRelease()) {
       GLOG_ERROR(module.first << " Module release failed ");
       return false;
-    };
+    }
   }
 
   GLOG_INFO("[Release]: ALL module release ");
