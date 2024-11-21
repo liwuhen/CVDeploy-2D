@@ -1,6 +1,6 @@
 <launch>
     <node pkg="parking_fusion" type="parking_fusion_node" name="parking_fusion_node" output="screen">
-        <rosparam param="topic_sub_loc_vec">["/tpimu_msgs"]</rosparam> 
+        <rosparam param="topic_sub_loc_vec">["/tpimu_msgs"]</rosparam>
         <rosparam param="topic_sub_parking_vec">["/tpparkingperception"]</rosparam>
         <rosparam param="topic_sub_parkingservice_vec">["/tpparking_statemachine"]</rosparam>
         <rosparam param="topic_pub_parkings">["/tpglobalparkinginfolist"]</rosparam>

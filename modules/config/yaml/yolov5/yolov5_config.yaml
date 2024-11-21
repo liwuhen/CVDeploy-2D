@@ -7,7 +7,7 @@ inference_config:
   onnx_path: /config/model/yolov5s.onnx
   engine_path: /config/model/yolov5s_fp32.trt
   predict_path: /config/model/predict.data
-  offline_test: 
+  offline_test:
     img_path: /config/data/coco/car.jpg
     save_img: /workspace/image
 

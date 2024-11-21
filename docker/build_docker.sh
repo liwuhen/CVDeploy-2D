@@ -10,7 +10,7 @@
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 
+# distributed under the License is distributed on an
 # BASIS
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
@@ -48,5 +48,6 @@ else
 fi
 
 echo "Building container:"
-echo "> docker build $docker_args"
-docker build $docker_args
+echo "> docker build ${docker_args}"
+
+docker build "${docker_args}"

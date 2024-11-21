@@ -8,7 +8,7 @@
 *     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an 
+* distributed under the License is distributed on an
  BASIS
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
@@ -24,9 +24,9 @@
 namespace hpc {
 namespace common {
 
-#define MODEL_FLAG "yolov5"
+#define MODEL_FLAG "OFF"
 
-} //namespace common
-} //namespace hpc
+}  // namespace common
+}  // namespace hpc
 
-#endif // APP_COMMON_STD_CMAKE_H_IN__
+#endif  // APP_COMMON_STD_CMAKE_H_IN__

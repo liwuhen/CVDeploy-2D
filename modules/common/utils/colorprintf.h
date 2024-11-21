@@ -1,14 +1,14 @@
 /* ==================================================================
 * Copyright (c) 2024, LiWuHen.  All rights reserved.
 *
-* Licensed under the Apache License, Version 2.0 
+* Licensed under the Apache License, Version 2.0
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
 *     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an 
+* distributed under the License is distributed on an
  BASIS
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
@@ -19,14 +19,14 @@
 #ifndef APP_COMMON_COLORPRINTF_H__
 #define APP_COMMON_COLORPRINTF_H__
 
-#include <stdio.h>
 #include <glog/logging.h>
+#include <stdio.h>
 
-namespace hpc{
-namespace common{
+namespace hpc {
+namespace common {
 
 //颜色宏定义
-#define NONEC  "\033[0m"
+#define NONEC "\033[0m"
 #define RED "\033[1;32;31m"
 #define LIGHT_RED "\033[1;31m"
 #define GREEN "\033[1;32;32m"
@@ -43,15 +43,12 @@ namespace common{
 #define LIGHT_GRAY "\033[1;37m"
 #define WHITE "\033[1;37m"
 
-
-#define LOG_COLOR(severity, message) \
-    LOG(severity) << message
-#define GLOG_ERROR(message) LOG_COLOR(ERROR,message)
-#define GLOG_WARNING(message) LOG_COLOR(WARNING,message)
+#define LOG_COLOR(severity, message) LOG(severity) << message
+#define GLOG_ERROR(message) LOG_COLOR(ERROR, message)
+#define GLOG_WARNING(message) LOG_COLOR(WARNING, message)
 #define GLOG_INFO(message) LOG_COLOR(INFO, message)
 
+}  // namespace common
+}  // namespace hpc
 
-} //namespace common
-} //namespace hpc
-
-#endif // APP_COMMON_COLORPRINTF_H__
+#endif  // APP_COMMON_COLORPRINTF_H__

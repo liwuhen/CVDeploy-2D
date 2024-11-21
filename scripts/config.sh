@@ -10,7 +10,7 @@
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 
+# distributed under the License is distributed on an
 # BASIS
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
@@ -22,14 +22,13 @@ set -e
 
 # common param
 TIME=$(date "+%Y-%m-%d %H:%M:%S")
-export HOME_DIR=$(dirname $(readlink -f $0))
-HOME_DIR=${HOME_DIR}/..
+export HOME_DIR=$(dirname "$(readlink -f "$0")")
+HOME_DIR="${HOME_DIR}"/..
 echo -e "\e[1m\e[34m[Bash-Home-${TIME}]: ${HOME_DIR} \e[0m"
 
 
 # compiler configure
-COMPLIER_FLAG="x86"
-CMAKE_COMPILER_PATH=${HOME_DIR}/platforms/linux/arm-toolchain.cmake
+CMAKE_COMPILER_PATH="${HOME_DIR}"/platforms/linux/arm-toolchain.cmake
 CMAKE_ARM_ARGS="-DCMAKE_TOOLCHAIN_FILE=${CMAKE_COMPILER_PATH}"
 
 # configure  param
@@ -47,7 +46,7 @@ MODEL_FLAG=NONE
 MODEL_BOOL_FLAG=False
 MODEL_SETS=("yolov5" "yolox")
 
-# complier platform
+# compiler platform
 PLATFORM_FLAG=NONE
 PLATFORM_BOOL_FLAG=False
 PLATFORM_SETS=("NVIDIA" "QNN")
@@ -85,7 +84,7 @@ function parse_args()
                 -pack)   PACK_FLAG=ON         ;;
                 *)       FUN_BOOL_FLAG=False  ;;
             esac
-        else 
+        else
             for fun in "${CONFIGURE_SETS[@]}"; do
                 if [ "$opt" == "$fun" ]; then
                     FUN_BOOL_FLAG=False
@@ -98,7 +97,7 @@ function parse_args()
 
     # check model
     if [ "$MODEL_BOOL_FLAG" == "False" ] ; then
-            echo -e "\e[1m\e[34m[Bash-Model-${TIME}]: parameters not in model sets. 
+            echo -e "\e[1m\e[34m[Bash-Model-${TIME}]: parameters not in model sets.
 Available model parameters are as follows:
     1) yolov5    2) yolox \e[0m"
             exit 1
@@ -113,7 +112,7 @@ Available platform parameters are as follows:
     # check function
     if [ "$FUN_BOOL_FLAG" == "False" ] ; then
             echo -e "\e[1m\e[34m[Bash-Model-${TIME}]: parameters does not exist.
-Available parameters are as follows: 
+Available parameters are as follows:
     1) -a | -all | all. Compile all modules
     2) -clean. Clear compiled files
     3) -arm.   Enable cross-compilation mode

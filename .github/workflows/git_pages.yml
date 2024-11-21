@@ -1,6 +1,6 @@
 name: Generate and publish docs
 
-on: 
+on:
   pull_request:
     branches: ["main"]
   # Runs on pushes targeting the default branch
@@ -8,7 +8,7 @@ on:
     branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -46,7 +46,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5.0.0 # v5.0.0
         with:
-          enablement: true  #  
+          enablement: true  #
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5 # v4.0.5    
+        uses: actions/deploy-pages@v4.0.5 # v4.0.5
