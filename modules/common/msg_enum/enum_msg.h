@@ -28,7 +28,7 @@
 namespace hpc {
 namespace common {
 
-typedef enum class modle_acc_ : uint8_t { MODLE_FLOAT32 = 0, MODLE_FLOAT16, MODLE_INT8 } ModelACC;
+typedef enum class model_acc_ : uint8_t { MODEL_FLOAT32 = 0, MODEL_FLOAT16, MODEL_INT8 } ModelACC;
 
 typedef enum class device_mode_ : uint8_t { GPU_MODE = 0, CPU_MODE } DeviceMode;
 

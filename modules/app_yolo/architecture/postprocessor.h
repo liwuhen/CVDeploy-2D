@@ -111,11 +111,11 @@ class PostProcessor : public InferModuleBase {
   void Inference();
 
   /**
-   * @brief     Visualisation.
+   * @brief     Visualization.
    * @param[in] [bool, cv::Mat&, int64_t, vector<Box>&].
    * @return    void.
    */
-  void Visualisation(bool real_time, cv::Mat& img, int64_t timestamp, vector<Box>& results);
+  void Visualization(bool real_time, cv::Mat& img, int64_t timestamp, vector<Box>& results);
 
  private:
   std::atomic<bool> running_;

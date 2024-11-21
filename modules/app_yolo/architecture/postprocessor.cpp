@@ -116,9 +116,9 @@ void PostProcessor::Inference() {
 }
 
 /**
- * @description: Visualisation.
+ * @description: Visualization.
  */
-void PostProcessor::Visualisation(bool real_time, cv::Mat& img, int64_t timestamp,
+void PostProcessor::Visualization(bool real_time, cv::Mat& img, int64_t timestamp,
                                   vector<Box>& results) {
   for (auto& box : results) {
     cv::rectangle(img, cv::Point(box.left, box.top), cv::Point(box.right, box.bottom),

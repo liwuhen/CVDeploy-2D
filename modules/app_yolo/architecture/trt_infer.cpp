@@ -151,17 +151,17 @@ bool TrtInfer::BuildModel() {
   config->setMaxWorkspaceSize(1 << 28);
 
   switch ((ModelACC)parsemsgs_->model_acc_) {
-    case ModelACC::MODLE_FLOAT32:
+    case ModelACC::MODEL_FLOAT32:
       if (builder->platformHasTf32()) {
         config->setFlag(BuilderFlag::kTF32);
       }
       break;
-    case ModelACC::MODLE_FLOAT16:
+    case ModelACC::MODEL_FLOAT16:
       if (builder->platformHasFastFp16()) {
         config->setFlag(BuilderFlag::kFP16);
       }
       break;
-    case ModelACC::MODLE_INT8:
+    case ModelACC::MODEL_INT8:
       if (builder->platformHasFastInt8()) {
         config->setFlag(BuilderFlag::kINT8);
       }

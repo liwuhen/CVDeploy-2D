@@ -93,15 +93,15 @@ bool DecodeProcessor::Inference(float* predict, InfertMsg& infer_msg,
   }
   bboxQueue->Push(msg);
 
-  Visualisation(false, infer_msg.image, infer_msg.frame_id, box_result);
+  Visualization(false, infer_msg.image, infer_msg.frame_id, box_result);
 
   return true;
 }
 
 /**
- * @description: Visualisation
+ * @description: Visualization
  */
-void DecodeProcessor::Visualisation(bool real_time, cv::Mat& img, int64_t timestamp,
+void DecodeProcessor::Visualization(bool real_time, cv::Mat& img, int64_t timestamp,
                                     vector<Box>& results) {
   for (auto& box : results) {
     cv::Scalar color;
