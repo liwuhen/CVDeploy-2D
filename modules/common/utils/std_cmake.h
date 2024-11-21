@@ -26,7 +26,7 @@ namespace common {
 
 #define MODEL_FLAG "yolov5"
 
-} //namespace common
-} //namespace hpc
+}  // namespace common
+}  // namespace hpc
 
-#endif // APP_COMMON_STD_CMAKE_H_IN__
+#endif  // APP_COMMON_STD_CMAKE_H_IN__

@@ -81,7 +81,7 @@ bool PreProcessor::DataResourceRelease() {}
  * @description: Inference.
  */
 bool PreProcessor::Inference(InfertMsg& input_msg, float* dstimg, DeviceMode inferMode,
-      cudaStream_t stream) {
+                             cudaStream_t stream) {
   CalAffineMatrix(input_msg);
 
   switch (inferMode) {
@@ -91,8 +91,9 @@ bool PreProcessor::Inference(InfertMsg& input_msg, float* dstimg, DeviceMode inf
       }
       break;
     case DeviceMode::CPU_MODE:
-      if (!CpuPreprocessor(input_msg.image, input_msg.timestamp, dstimg, stream))
-      { return false; }
+      if (!CpuPreprocessor(input_msg.image, input_msg.timestamp, dstimg, stream)) {
+        return false;
+      }
       break;
     default:
       break;
@@ -125,12 +126,8 @@ bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg, float* dstimg, cudaStre
 /**
  * @description: Cpu preprocessor.
  */
-bool PreProcessor::CpuPreprocessor(
-    cv::Mat& srcimg,
-    uint64_t timestamp,
-    float* input_device_gpu,
-    cudaStream_t stream) {
-
+bool PreProcessor::CpuPreprocessor(cv::Mat& srcimg, uint64_t timestamp, float* input_device_gpu,
+                                   cudaStream_t stream) {
   checkRuntime(cudaMallocHost(&input_data_host_, sizeof(float) * parsemsgs_->dstimg_size_));
 
   float scale_x = parsemsgs_->dst_img_w_ / static_cast<float>(parsemsgs_->src_img_w_);

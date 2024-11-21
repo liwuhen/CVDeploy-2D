@@ -61,8 +61,7 @@ static const char* cocolabels[] = {"person",        "bicycle",      "car",
                                    "oven",          "toaster",      "sink",
                                    "refrigerator",  "book",         "clock",
                                    "vase",          "scissors",     "teddy bear",
-                                   "hair drier",    "toothbrush"
-};
+                                   "hair drier",    "toothbrush"};
 
 // hsv 转 bgr
 static std::tuple<uint8_t, uint8_t, uint8_t> hsv2bgr(float h, float s, float v) {

@@ -96,8 +96,8 @@ struct CVImage {
   std::vector<uint8_t> data;  // 存储连续的像素值
 
   CVImage();
-  CVImage(int width, int height, int channel) : img_width(width), \
-    img_height(height), img_channel(channel), img_size(0) {}
+  CVImage(int width, int height, int channel)
+      : img_width(width), img_height(height), img_channel(channel), img_size(0) {}
 
   ~CVImage() {}
 
