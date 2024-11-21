@@ -44,7 +44,7 @@ docker run -it --gpus all --network host --privileged  --cap-add=SYS_PTRACE --se
 # ![project](https://img.shields.io/badge/How%20to%20build-project-brightgreen) Building Project
 ## 1. Setup Environment
 ###  Shell Example:  X86
-```shell 
+```shell
 # Setting up your computer's cuda and tensorrt environment -- x86 version
 set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-11.4/targets/x86_64-linux")
 set(TENSORRT_DIR "/home/x86_toolchain/tensorrt")
@@ -68,12 +68,12 @@ set(TENSORRT_DIR "/home/aarch64_toolchain/tensorrt")
 Shell scripts provide optional platforms.
 
 - Available platform parameters are as follows:
-    |NVIDIA|QNN| 
+    |NVIDIA|QNN|
     |:-:|:-:|
-- Available model parameters are as follows: 
-    |yolov5|yolox| 
+- Available model parameters are as follows:
+    |yolov5|yolox|
     |:-:|:-:|
-- Available parameters are as follows: 
+- Available parameters are as follows:
     1) **-a | -all | all**. Compile all modules
     2) **-clean**. Clear compiled files
     3) **-arm**.   Enable cross-compilation mode
@@ -95,8 +95,8 @@ bash ./scripts/build.sh yolov5 nvidia  -arm -pack -clean
 
 ```shell
 #!/bin/bash
-- x86 
-bash ./install_nvidia/run.sh yolov5 nvidia 
+- x86
+bash ./install_nvidia/run.sh yolov5 nvidia
 
 - arm
 bash ./install_nvidia/run.sh yolov5 nvidia -arm

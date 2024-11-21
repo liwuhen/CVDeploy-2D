@@ -1,0 +1,115 @@
+# Pre-commit hook
+# See documentation at: https://pre-commit.com/
+#
+# Pre-commit hook to run the sanity checks from Jenkins locally.
+#
+# Requirements:
+#   - How to configure:
+#        - $ pip install pre-commit
+#        - $ pre-commit install --hook-type pre-push
+#   - How to prevent running it:
+#        - git options: --no-verify or -n
+#        - $ git commit -n -m "YOUR COMMIT MESSAGE"
+#   - How to run it as standalone
+#        - $ pre-commit run
+#
+
+ci:
+  autoupdate_commit_msg: "chore(deps): update pre-commit hooks"
+  autofix_commit_msg: "style: pre-commit fixes"
+  autoupdate_schedule: monthly
+
+repos:
+
+# # Clang format the codebase automatically
+# - repo: https://github.com/pre-commit/mirrors-clang-format
+#   rev: "v14.0.6"
+#   hooks:
+#   - id: clang-format
+#     types_or: [c++, c, cuda]
+
+# Check static types with mypy
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: "v1.11.2"
+  hooks:
+  - id: mypy
+    args: []
+    exclude: ^(tests|docs)/
+    additional_dependencies:
+    - markdown-it-py
+    - nox
+    - rich
+    - types-setuptools
+
+# CMake formatting
+- repo: https://github.com/cheshirekow/cmake-format-precommit
+  rev: "v0.6.13"
+  hooks:
+  - id: cmake-format
+    additional_dependencies: [pyyaml]
+    types: [file]
+    files: (\.cmake|CMakeLists.txt)(.in)?$
+
+# Standard hooks
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: "v4.6.0"
+  hooks:
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-docstring-first
+  - id: check-merge-conflict
+  - id: check-symlinks
+  - id: check-toml
+  - id: check-yaml
+  - id: debug-statements
+  - id: end-of-file-fixer
+  - id: mixed-line-ending
+  - id: requirements-txt-fixer
+  - id: trailing-whitespace
+
+# Also code format the docs
+- repo: https://github.com/adamchainz/blacken-docs
+  rev: "1.18.0"
+  hooks:
+  - id: blacken-docs
+    additional_dependencies:
+    - black==23.*
+
+# Changes tabs to spaces
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: "v1.5.5"
+  hooks:
+  - id: remove-tabs
+
+# Avoid directional quotes
+- repo: https://github.com/sirosen/texthooks
+  rev: "0.6.7"
+  hooks:
+  - id: fix-ligatures
+  - id: fix-smartquotes
+
+# Checking for common mistakes
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: "v1.10.0"
+  hooks:
+  - id: rst-backticks
+  - id: rst-directive-colons
+  - id: rst-inline-touching-normal
+
+# Check for spelling
+# Use tools/codespell_ignore_lines_from_errors.py
+# to rebuild .codespell-ignore-lines
+- repo: https://github.com/codespell-project/codespell
+  rev: "v2.1.0"
+  hooks:
+  - id: codespell
+    exclude: "docs/hpcdoc/source/_static"
+    args: ["-Lccompiler,intstruct"]
+
+# Check schemas on some of our YAML files
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.29.2
+  hooks:
+  - id: check-readthedocs
+  - id: check-github-workflows
+  - id: check-dependabot

@@ -19,7 +19,7 @@
 
 #include "logging.h"
 
-extern Logger            gLogger;
+extern Logger gLogger;
 extern LogStreamConsumer gLogVerbose;
 extern LogStreamConsumer gLogInfo;
 extern LogStreamConsumer gLogWarning;

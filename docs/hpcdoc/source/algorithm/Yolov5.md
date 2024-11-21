@@ -120,11 +120,11 @@ There are a lot of reasons for removing existing ONNX operator or function, such
 
 Any operator in ONNX was added because it was required by a model and/or framework. In order to deprecate such an operator we need to do the following.
 
-- Operator can’t be deprecated unless there is a replacement.
+- Operator can't be deprecated unless there is a replacement.
     - Replacement can be a more general operator that supersedes the old one.
     - Or a set of primitive operators that together can implement the same functionality and behavior of the deprecated operator (Function).
 - If the deprecated operator can be decomposed by existing operators then it must be converted to a function.
-- If replacement isn’t in ONNX standard yet, then add the replacement operator or set of operators first.
+- If replacement isn't in ONNX standard yet, then add the replacement operator or set of operators first.
 - Add a version adapter which turns the operator into its replacement for the version converter. Example: [onnx/version_converter/adapters/upsample_9_10.h](/onnx/version_converter/adapters/upsample_9_10.h)
 - No grace period is needed for deprecated operators.
 
