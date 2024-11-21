@@ -101,7 +101,8 @@ bool TrtInfer::Inference(float* output_img_device) {
                           output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t),
                           cudaMemcpyDeviceToDevice));
 
-  bool success = execution_context_->enqueueV2(reinterpret_cast<void**>(gpu_buffers_), stream_, nullptr);
+  bool success =
+      execution_context_->enqueueV2(reinterpret_cast<void**>(gpu_buffers_), stream_, nullptr);
   if (!success) {
     LOG(ERROR) << " Inference failed ";
     return false;
