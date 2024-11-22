@@ -1,7 +1,3 @@
-REM Copyright (c) Sphinx Project
-REM
-REM SPDX-License-Identifier: BSD-2-Clause
-
 @ECHO OFF
 
 pushd %~dp0
