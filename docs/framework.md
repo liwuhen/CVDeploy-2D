@@ -10,6 +10,6 @@ The inference framework is divided into three modules: pre-processing, inference
 
 The flow of the framework is shown below
 
-![Framework Flow](./infer.jpg)
+![Framework Flow](./images/infer.jpg)
 
 Frame output can be connected to middleware ros1, ros2, or other middleware.
