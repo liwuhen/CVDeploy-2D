@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./docs/images/model-infer-dark-color.png" width="500" height="200">
+<img src="./docs/images/cv-deploy-light-color.png" width="500" height="140">
 
 <h2 align="center">AI model deployment based on NVIDIA and Qualcomm platforms</h2>
 
