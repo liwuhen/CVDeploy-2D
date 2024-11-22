@@ -4,9 +4,9 @@ Copyright (c) Model Infer Project Contributors
 SPDX-License-Identifier: Apache-2.0
 -->
 
-(onnx-detail-float4)=
+(nvidia-float4)=
 
-# Float stored in 4 bits
+# Nvidia
 
 ## Papers
 

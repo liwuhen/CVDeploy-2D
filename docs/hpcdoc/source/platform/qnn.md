@@ -4,9 +4,9 @@ Copyright (c) Model Infer Project Contributors
 SPDX-License-Identifier: Apache-2.0
 -->
 
-(onnx-detail-float8)=
+(qnn-float8)=
 
-# Float stored in 8 bits
+# Qnn
 
 ## Papers
 

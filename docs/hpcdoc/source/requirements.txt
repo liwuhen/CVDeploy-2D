@@ -1,11 +1,19 @@
-furo
-markupsafe
-matplotlib
-myst-parser[linkify]
-pillow
-pydot
-sphinx
-sphinx-copybutton
-sphinx-exec-code
-sphinx-gallery
-sphinx-tabs
+-f https://download.pytorch.org/whl/cpu
+aiohttp
+cloudpickle
+mistral_common >= 1.3.4
+msgspec
+myst-parser==2.0.0
+openai # Required by docs/source/serving/openai_compatible_server.md's vllm.entrypoints.openai.cli_args
+partial-json-parser # Required by docs/source/serving/openai_compatible_server.md's vllm.entrypoints.openai.cli_args
+
+py-cpuinfo
+
+# packages to install to build the documentation
+pydantic >= 2.8
+sphinx==6.2.1
+sphinx-argparse==0.4.0
+sphinx-book-theme==1.0.1
+sphinx-copybutton==0.5.2
+starlette
+transformers
