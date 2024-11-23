@@ -19,9 +19,9 @@ SPDX-License-Identifier: Apache-2.0
 
    <p style="text-align:center">
    <script async defer src="https://buttons.github.io/buttons.js"></script>
-   <a class="github-button" href="https://github.com/liwuhen/Model-Infer" data-show-count="true" data-size="large" aria-label="Star">Star</a>
-   <a class="github-button" href="https://github.com/liwuhen/Model-Infer/subscription" data-icon="octicon-eye" data-size="large" aria-label="Watch">Watch</a>
-   <a class="github-button" href="https://github.com/liwuhen/Model-Infer/fork" data-icon="octicon-repo-forked" data-size="large" aria-label="Fork">Fork</a>
+   <a class="github-button" href="https://github.com/liwuhen/CVDeploy-2D" data-show-count="true" data-size="large" aria-label="Star">Star</a>
+   <a class="github-button" href="https://github.com/liwuhen/CVDeploy-2D/subscription" data-icon="octicon-eye" data-size="large" aria-label="Watch">Watch</a>
+   <a class="github-button" href="https://github.com/liwuhen/CVDeploy-2D/fork" data-icon="octicon-repo-forked" data-size="large" aria-label="Fork">Fork</a>
    </p>
 
 
