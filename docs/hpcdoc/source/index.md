@@ -1,5 +1,5 @@
 <!--
-Copyright (c) Model-Infer Project Contributors
+Copyright (c) CVDeploy Project Contributors
 
 SPDX-License-Identifier: Apache-2.0
 -->
