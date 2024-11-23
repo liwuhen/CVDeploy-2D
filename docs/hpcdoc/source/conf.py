@@ -64,7 +64,7 @@ html_theme = 'sphinx_book_theme'
 html_logo = 'assets/logos/cv-deploy-dark-color.png'
 html_theme_options = {
     'path_to_docs': 'docs/hpcdoc/source',
-    'repository_url': 'https://github.com/liwuhen/Model-Infer',
+    'repository_url': 'https://github.com/liwuhen/CVDeploy-2D',
     'use_repository_button': True,
     'use_edit_page_button': True,
 }
