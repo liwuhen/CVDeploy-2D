@@ -1,3 +1,9 @@
+<!--
+Copyright (c) CV-Deploy Project Contributors
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 (onnx-tutorial)=
 
 # Platform
