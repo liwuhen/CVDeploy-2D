@@ -50,4 +50,4 @@ fi
 echo "Building container:"
 echo "> docker build ${docker_args}"
 
-docker build "${docker_args}"
+docker build ${docker_args}

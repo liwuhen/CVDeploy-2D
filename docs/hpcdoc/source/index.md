@@ -52,6 +52,7 @@ Documentation
 :caption: Getting Started
 
 getting_started/installation
+getting_started/Quickstart
 ```
 
 ```{toctree}
