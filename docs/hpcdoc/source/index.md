@@ -64,10 +64,18 @@ intro/framework
 
 ```{toctree}
 :maxdepth: 1
+:caption: Models
+
+models/Yolov5
+models/Yolox
+```
+
+```{toctree}
+:maxdepth: 1
 :caption: Algorithm
 
-algorithm/Yolov5
-algorithm/Yolox
+algorithm/Sort
+algorithm/Bytrack
 ```
 
 ```{toctree}
