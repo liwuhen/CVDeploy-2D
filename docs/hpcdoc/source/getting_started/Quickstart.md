@@ -5,11 +5,11 @@
 ![NVIDIA](https://img.shields.io/badge/NVIDIA-%2376B900.svg?style=for-the-badge&logo=nvidia&logoColor=white)
 ![Qualcomm](https://img.shields.io/badge/Qualcomm-3253DC?style=for-the-badge&logo=qualcomm&logoColor=white)
 
-## 1. 构建项目
+## 1. Build project
 ![docker](https://img.shields.io/badge/How%20to%20build-docker-brightgreen)
-### 1.1 Docker环境下配置arm 版本gcc与g++交叉编译环境
+### 1.1 Configuring the arm version of the gcc and g++ cross-compile environments in a Docker environment
 
-- 在**platforms/arm**目录下，arm-toolchain.cmake中替换以下路径为docker容器中arm工具链的路径(arm工具链的路径具体路径可自行决定)
+- In the **platforms/arm** directory, replace the following path in arm-toolchain.cmake with the path to the arm toolchain in the docker container (the specific path to the arm toolchain is up to you)
 
     ```shell
     # Setting up your computer's arm gcc,g++ environment -- arm version
@@ -26,10 +26,10 @@
     set(CUDA_TOOLKIT_ROOT_DIR "/home/aarch64_toolchain/cuda")
     set(TENSORRT_DIR "/home/aarch64_toolchain/tensorrt")
     ```
-### 1.2 Docker环境下配置第三方库路径
-- 在**cmake/third_library.cmake**中配置第三方库路径，其中${COMPILER_FLAG}为自定义的存放arm与x86版本第三方库目录的名称，例如仓库提供的：aarch64_toolchain(arm版本)、x86_toolchain(x86版本)。
+### 1.2 Configuring third-party library paths in a Docker environment
+- Configure the third-party library path in **cmake/third_library.cmake**, where ${COMPILER_FLAG} is the name of the customized directory for storing third-party libraries for the arm and x86 versions, e.g., the repository provides the following: aarch64_toolchain (arm version), x86_toolchain (x86 version).
 
-    作者将第三方库统一存放在本地电脑的固定目录，构建docker容器时，将第三方库目录挂载到容器中(如将图1.2中所有目录放在本地home路径下，构建docker容器时，将home目录挂载到容器中)，例如图1.2。
+    The author unified the third-party libraries in a fixed directory on the local computer, and mounted the third-party library directories into the container when building docker containers (e.g., put all the directories in Figure 1.2 under the local home path, and mount the home directory into the container when building docker containers), such as in Figure 1.2.
     ![library](./image.png)
     ![aarch64_toolchain](./aarch64_toolchain.png)
     ```shell
@@ -40,7 +40,7 @@
     set(YAMLCPP_DIR "/home/IM/${COMPILER_FLAG}/yaml_cpp")
     set(TENSORRT_DIR "/home/IM/${COMPILER_FLAG}/tensorrt")
     ```
-### 1.3 源码编译
+### 1.3 Source Compilation
 ![project](https://img.shields.io/badge/How%20to%20build-project-brightgreen)
 
 Shell scripts provide optional platforms.
@@ -71,7 +71,7 @@ bash ./scripts/build.sh yolov5 nvidia  -x86 -pack -clean
 bash ./scripts/build.sh yolov5 nvidia  -arm -pack -clean
 ```
 
-### 1.4 程序运行
+### 1.4 program execution
 ![Usage](https://img.shields.io/badge/How%20to%20use-platform-brightgreen)
 
 ```shell
