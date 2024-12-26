@@ -29,82 +29,20 @@ The repository mainly provides 2D model inference functionality, and the code pr
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |Version|3.4|2.2.2|0.6.0|0.8.0|11.4|8.4|8.4|3.4.5|
 
-# ![docker](https://img.shields.io/badge/How%20to%20build-docker-brightgreen) Cross-compile Docker
+# Getting Started
+Visit our documentation to learn more.
+- [Installation](./docs/hpcdoc/source/getting_started/installation.md)
+- [Quickstart](./docs/hpcdoc/source/getting_started/Quickstart.md)
+- [Supported Models](./docs/hpcdoc/source/algorithm/Supported_Models.md)
+- [Supported Object Tracking](./docs/hpcdoc/source/algorithm/Supported_Object_Tracking.md)
 
-- **Docker Image**
-```shell
-#!/bin/bash
-
-./docker/build_docker.sh --file docker/ubuntu-cross-aarch64.Dockerfile --tag cross-aarch64_dev
-```
-
-- **Docker Container**
-```shell
-#!/bin/bash
-
-docker run -it --gpus all --network host --privileged  --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -e DISPLAY=$DISPLAY -e GDK_SCALE -e GDK_DPI_SCALE -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/:/home/  --name cross-aarch64_container cross-aarch64_dev:latest  bash
-```
-
-# ![project](https://img.shields.io/badge/How%20to%20build-project-brightgreen) Building Project
-## 1. Setup Environment
-###  Shell Example:  X86
-```shell
-# Setting up your computer's cuda and tensorrt environment -- x86 version
-set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-11.4/targets/x86_64-linux")
-set(TENSORRT_DIR "/home/x86_toolchain/tensorrt")
-```
-###  Shell Example:  Arm
-- **arm_toolchain.cmake**
-```shell
-# Setting up your computer's arm gcc,g++ environment -- arm version
-set(CMAKE_C_COMPILER  /home/aarch64_toolchain/aarch64_gun/bin/aarch64-buildroot-linux-gnu-gcc)
-set(CMAKE_CXX_COMPILER /home/aarch64_toolchain/aarch64_gun/bin/aarch64-buildroot-linux-gnu-g++)
-set(CMAKE_FIND_ROOT_PATH  /home/aarch64_toolchain/aarch64_gun/aarch64-buildroot-linux-gnu/sysroot)
-```
-- **thirdlibs.cmake**
-```shell
-# Setting up your computer's cuda and tensorrt environment -- arm version
-set(CUDA_TOOLKIT_ROOT_DIR "/home/aarch64_toolchain/cuda")
-set(TENSORRT_DIR "/home/aarch64_toolchain/tensorrt")
-```
-
-## 2. X86 && Arm Platform
-Shell scripts provide optional platforms.
-
-- Available platform parameters are as follows:
-    |NVIDIA|QNN|
-    |:-:|:-:|
-- Available model parameters are as follows:
-    |yolov5|yolox|
-    |:-:|:-:|
-- Available parameters are as follows:
-    1) **-a | -all | all**. Compile all modules
-    2) **-clean**. Clear compiled files
-    3) **-arm**.   Enable cross-compilation mode
-    4) **-debug**. Enable debug mode
-    5) **-x86**.   Enable x86 mode
-    6) **-pack**.  Packaging of executables and dynamic libraries
-
-
-```shell
-#!/bin/bash
-- x86
-bash ./scripts/build.sh yolov5 nvidia  -x86 -pack -clean
-
-- arm
-bash ./scripts/build.sh yolov5 nvidia  -arm -pack -clean
-```
-
-# ![Usage](https://img.shields.io/badge/How%20to%20use-platform-brightgreen) Usage X86 && ARM Linux
-
-```shell
-#!/bin/bash
-- x86
-bash ./install_nvidia/run.sh yolov5 nvidia
-
-- arm
-bash ./install_nvidia/run.sh yolov5 nvidia -arm
-```
+# Performances
+|Model|Platform|Resolution|FPS|Memory|Cpu|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|Yolov5|NVIDIA RTX4060|640x640|-|-|-|
+|Yolov5|NVIDIA orin|640x640|-|-|-|
+|Yolox|NVIDIA RTX4060|416x416|-|-|-|
+|Yolox|NVIDIA orin|416x416|-|-|-|
 
 # ![Contribute](https://img.shields.io/badge/how%20to%20contribute-project-brightgreen) Contributing
 Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for the contributing guideline.We encourage you to join the effort and contribute feedback, ideas, and code. You can participate in Working Groups, Working Groups have most of their discussions on [Slack](https://app.slack.com/client/T07U5CEEXCP/C07UKUA9TCJ) or QQ (938558640).
