@@ -87,7 +87,9 @@ bool DecodeProcessor::DataResourceRelease() {}
 /**
  * @description: Inference
  */
-bool DecodeProcessor::Inference(float* predict, InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue) {
+bool DecodeProcessor::Inference(float* predict,
+    InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue)
+{
   imgshape_["src"] = make_pair(infer_msg.height, infer_msg.width);
 
   vector<Box> box_result;
@@ -108,7 +110,9 @@ bool DecodeProcessor::Inference(float* predict, InfertMsg& infer_msg, std::share
 /**
  * @description: Visualization
  */
-void DecodeProcessor::Visualization(bool real_time, cv::Mat& img, int64_t timestamp, vector<Box>& results) {
+void DecodeProcessor::Visualization(bool real_time,
+    cv::Mat& img, int64_t timestamp, vector<Box>& results)
+{
   for (auto& box : results) {
     cv::Scalar color;
     tie(color[0], color[1], color[2]) = random_color(box.label);
@@ -133,30 +137,98 @@ void DecodeProcessor::Visualization(bool real_time, cv::Mat& img, int64_t timest
 /**
  * @description: Bbox mapping to original map scale.
  */
-void DecodeProcessor::ScaleBoxes(vector<Box>& box_result) {
-  float gain = min(imgshape_["dst"].first / static_cast<float>(imgshape_["src"].first), imgshape_["dst"].second / static_cast<float>(imgshape_["src"].second));
-  float pad[] = {(imgshape_["dst"].second - imgshape_["src"].second * gain) * 0.5, (imgshape_["dst"].first - imgshape_["src"].first * gain) * 0.5};
+void DecodeProcessor::ScaleBoxes(vector<Box>& box_result)
+{
+  float gain  = min(imgshape_["dst"].first / static_cast<float>(imgshape_["src"].first),\
+                imgshape_["dst"].second / static_cast<float>(imgshape_["src"].second));
+  float pad[] = {(imgshape_["dst"].second - imgshape_["src"].second * gain) * 0.5, \
+                (imgshape_["dst"].first - imgshape_["src"].first * gain) * 0.5};
   for (int index = 0; index < box_result.size(); index++) {
-    box_result[index].left = clamp((box_result[index].left - pad[0]) / gain, 0.0f, static_cast<float>(imgshape_["src"].second));
-    box_result[index].right = clamp((box_result[index].right - pad[0]) / gain, 0.0f, static_cast<float>(imgshape_["src"].second));
-    box_result[index].top = clamp((box_result[index].top - pad[1]) / gain, 0.0f, static_cast<float>(imgshape_["src"].first));
-    box_result[index].bottom = clamp((box_result[index].bottom - pad[1]) / gain, 0.0f, static_cast<float>(imgshape_["src"].first));
+    box_result[index].left   = clamp((box_result[index].left - pad[0]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].second));
+    box_result[index].right  = clamp((box_result[index].right - pad[0]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].second));
+    box_result[index].top    = clamp((box_result[index].top - pad[1]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].first));
+    box_result[index].bottom = clamp((box_result[index].bottom - pad[1]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].first));
   }
 }
 
 /**
- * @description: Cpu decode．
+ * @description: Box decode feature level．
  */
-void DecodeProcessor::CpuDecode(float* predict, InfertMsg& infer_msg, vector<Box>& box_result) {
+void DecodeProcessor::BboxDecodeFeatureLevel(float* predict,
+    InfertMsg& infer_msg, vector<Box>& box_result)
+{
+  // for (int j = 0; j < out_node_vec[1]; j++)
+  // {
+  //   float* lables_node = cpu_output_buffers_[0] + j * 3;
+  //   float* scores_node = cpu_output_buffers_[1] + j * 1;
+  //   float* boxes_node  = cpu_output_buffers_[2] + j * 4;  // 特征图级别
+
+  //   int label  = std::max_element(lables_node, lables_node + 3) - lables_node;
+  //   float prob = lables_node[label];
+
+  //   float objness = scores_node[0];
+  //   if(objness < confidence_threshold)
+  //       continue;
+
+  //   float confidence = prob * objness;
+  //   if(confidence < confidence_threshold)
+  //       continue;
+
+  //   if (j < 7680) {
+  //       grid_x = anchor_points[0][j].first;
+  //       grid_y = anchor_points[0][j].second;
+  //       stride = 8;
+  //   }
+  //   else if (j >= 7680 && j < 9600) {
+  //       grid_x = anchor_points[1][j-7680].first;
+  //       grid_y = anchor_points[1][j-7680].second;
+  //       stride = 16;
+  //   }
+  //   else if (j >= 9600 && j < 10080) {
+  //       grid_x = anchor_points[2][j-9600].first;
+  //       grid_y = anchor_points[2][j-9600].second;
+  //       stride = 32;
+  //   }
+
+  //   // 特征图级别 -> 输入图像层级
+  //   float cx     = (boxes_node[0] + grid_x) * stride;  // 输入图像级别
+  //   float cy     = (boxes_node[1] + grid_y) * stride;
+  //   float width  = exp(boxes_node[2]) * stride;
+  //   float height = exp(boxes_node[3]) * stride;  // anchor free
+  //   float left   = cx - width  * 0.5;  // 输入图像级别
+  //   float top    = cy - height * 0.5;
+  //   float right  = cx + width  * 0.5;
+  //   float bottom = cy + height * 0.5;
+
+  //   // 输入图像层级 -> 原图图像层级
+  //   float image_base_left   = d2i[0] * left   + d2i[2];
+  //   float image_base_right  = d2i[0] * right  + d2i[2];
+  //   float image_base_top    = d2i[0] * top    + d2i[5];
+  //   float image_base_bottom = d2i[0] * bottom + d2i[5];
+  //   bboxes.push_back({image_base_left, image_base_top, image_base_right, image_base_bottom, (float)label, confidence});
+  // }
+}
+
+/**
+ * @description: Box decode input level．
+ */
+void DecodeProcessor::BboxDecodeInputLevel(float* predict,
+    InfertMsg& infer_msg, vector<Box>& box_result)
+{
   vector<Box> boxes;
   int num_classes = parsemsgs_->predict_dim_[2] - 5;
-  for (int i = 0; i < parsemsgs_->predict_dim_[1]; ++i) {
-    float* pitem = predict + i * parsemsgs_->predict_dim_[2];
+  for (int i = 0; i < parsemsgs_->predict_dim_[1]; ++i)
+  {
+    float* pitem  = predict + i * parsemsgs_->predict_dim_[2];
     float objness = pitem[4];
     if (objness < parsemsgs_->obj_threshold_) continue;
     float* pclass = pitem + 5;
 
-    int label = std::max_element(pclass, pclass + num_classes) - pclass;
+    int label  = std::max_element(pclass, pclass + num_classes) - pclass;
     float prob = pclass[label];
     float confidence = prob * objness;
     if (confidence < parsemsgs_->obj_threshold_) continue;
@@ -165,21 +237,35 @@ void DecodeProcessor::CpuDecode(float* predict, InfertMsg& infer_msg, vector<Box
     float cy     = pitem[1];
     float width  = pitem[2];
     float height = pitem[3];
-    float left   = cx - width * 0.5;
+    float left   = cx - width  * 0.5;
     float top    = cy - height * 0.5;
-    float right  = cx + width * 0.5;
+    float right  = cx + width  * 0.5;
     float bottom = cy + height * 0.5;
 
     // 输入图像层级模型预测框 ==> 映射回原图上尺寸
-    float image_left = infer_msg.affineMatrix_inv(0, 0) * left + infer_msg.affineMatrix_inv(0, 2);
-    float image_top = infer_msg.affineMatrix_inv(1, 1) * top + infer_msg.affineMatrix_inv(1, 2);
-    float image_right = infer_msg.affineMatrix_inv(0, 0) * right + infer_msg.affineMatrix_inv(0, 2);
+    float image_left   = infer_msg.affineMatrix_inv(0, 0) * left   + infer_msg.affineMatrix_inv(0, 2);
+    float image_top    = infer_msg.affineMatrix_inv(1, 1) * top    + infer_msg.affineMatrix_inv(1, 2);
+    float image_right  = infer_msg.affineMatrix_inv(0, 0) * right  + infer_msg.affineMatrix_inv(0, 2);
     float image_bottom = infer_msg.affineMatrix_inv(1, 1) * bottom + infer_msg.affineMatrix_inv(1, 2);
 
     boxes.emplace_back(image_left, image_top, image_right, image_bottom, confidence, label);
   }
-
   nms_plugin_->Nms(boxes, box_result, parsemsgs_->nms_threshold_);
+}
+
+/**
+ * @description: Cpu decode．
+ */
+void DecodeProcessor::CpuDecode(float* predict,
+    InfertMsg& infer_msg, vector<Box>& box_result)
+{
+  if( (DecodeType)parsemsgs_->decode_type_ == DecodeType::FEATURE_LEVEL ) {
+    BboxDecodeFeatureLevel(predict, infer_msg, box_result);
+  } else if ( (DecodeType)parsemsgs_->decode_type_ == DecodeType::INPUT_LEVEL ) {
+    BboxDecodeInputLevel(predict, infer_msg, box_result);
+  } else {
+    GLOG_ERROR("[CpuDecode]: Decoding method error. ");
+  }
 }
 
 }  // namespace appinfer

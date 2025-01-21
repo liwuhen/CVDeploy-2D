@@ -139,6 +139,22 @@ class DecodeProcessor : public InferModuleBase {
   void ScaleBoxes(vector<Box>& box_result);
 
   /**
+   * @brief     Box decode feature level．
+   * @param[in] [float*, InfertMsg&, vector<Box>&]．
+   * @return    void.
+   */
+  void BboxDecodeFeatureLevel(float* predict,
+    InfertMsg& infer_msg, vector<Box>& box_result);
+
+  /**
+   * @brief     Box decode input level．
+   * @param[in] [float*, InfertMsg&, vector<Box>&]．
+   * @return    void.
+   */
+  void BboxDecodeInputLevel(float* predict,
+    InfertMsg& infer_msg, vector<Box>& box_result);
+
+  /**
    * @brief     Cpu decode．
    * @param[in] [float*, vector<Box>&]．
    * @return    void.

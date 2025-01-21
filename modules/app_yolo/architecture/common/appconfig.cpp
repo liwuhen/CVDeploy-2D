@@ -29,7 +29,9 @@ int AppConfig::dst_img_w_;
 int AppConfig::dst_img_h_;
 int AppConfig::dst_img_c_;
 int AppConfig::model_acc_;
+int AppConfig::branch_num_;
 int AppConfig::batchsizes_;
+int AppConfig::decode_type_;
 int AppConfig::max_objects_;
 float AppConfig::obj_threshold_;
 float AppConfig::nms_threshold_;
@@ -81,25 +83,27 @@ AppConfig::AppConfig(const std::string& config_filename) : config_filename_(conf
     return;
   }
 
-  src_img_w_ = yaml_node_["preprocessor_config"]["src_img_width"].as<int>();
-  src_img_h_ = yaml_node_["preprocessor_config"]["src_img_height"].as<int>();
-  src_img_c_ = yaml_node_["preprocessor_config"]["src_img_channel"].as<int>();
-  dst_img_w_ = yaml_node_["preprocessor_config"]["dst_img_width"].as<int>();
-  dst_img_h_ = yaml_node_["preprocessor_config"]["dst_img_height"].as<int>();
-  dst_img_c_ = yaml_node_["preprocessor_config"]["dst_img_channel"].as<int>();
-  batchsizes_ = yaml_node_["preprocessor_config"]["batch_size"].as<int>();
+  src_img_w_   = yaml_node_["preprocessor_config"]["src_img_width"].as<int>();
+  src_img_h_   = yaml_node_["preprocessor_config"]["src_img_height"].as<int>();
+  src_img_c_   = yaml_node_["preprocessor_config"]["src_img_channel"].as<int>();
+  dst_img_w_   = yaml_node_["preprocessor_config"]["dst_img_width"].as<int>();
+  dst_img_h_   = yaml_node_["preprocessor_config"]["dst_img_height"].as<int>();
+  dst_img_c_   = yaml_node_["preprocessor_config"]["dst_img_channel"].as<int>();
+  batchsizes_  = yaml_node_["preprocessor_config"]["batch_size"].as<int>();
+  branch_num_  = yaml_node_["predict_config"]["branch_num"].as<int>();
   predict_dim_ = yaml_node_["predict_config"]["predict_dim"].as<std::vector<int>>();
+  decode_type_ = yaml_node_["predict_config"]["decode_type"].as<int>();
   max_objects_ = yaml_node_["predict_config"]["max_objects"].as<int>();
   obj_threshold_ = yaml_node_["predict_config"]["obj_threshold"].as<float>();
   nms_threshold_ = yaml_node_["predict_config"]["nms_threshold"].as<float>();
-  img_path_ = yaml_node_["inference_config"]["offline_test"]["img_path"].as<std::string>();
-  save_img_ = yaml_node_["inference_config"]["offline_test"]["save_img"].as<std::string>();
-  trt_path_ = yaml_node_["inference_config"]["engine_path"].as<std::string>();
-  onnx_path_ = yaml_node_["inference_config"]["onnx_path"].as<std::string>();
-  model_acc_ = yaml_node_["inference_config"]["model_acc"].as<int>();
-  predict_path_ = yaml_node_["inference_config"]["predict_path"].as<std::string>();
-  log_path_ = yaml_node_["common_config"]["log_path"].as<std::string>();
-  imgs_path_ = yaml_node_["common_config"]["imgs_path"].as<std::string>();
+  img_path_      = yaml_node_["inference_config"]["offline_test"]["img_path"].as<std::string>();
+  save_img_      = yaml_node_["inference_config"]["offline_test"]["save_img"].as<std::string>();
+  trt_path_      = yaml_node_["inference_config"]["engine_path"].as<std::string>();
+  onnx_path_     = yaml_node_["inference_config"]["onnx_path"].as<std::string>();
+  model_acc_     = yaml_node_["inference_config"]["model_acc"].as<int>();
+  predict_path_  = yaml_node_["inference_config"]["predict_path"].as<std::string>();
+  log_path_      = yaml_node_["common_config"]["log_path"].as<std::string>();
+  imgs_path_     = yaml_node_["common_config"]["imgs_path"].as<std::string>();
 
   if (trt_path_ == "") {
     throw std::invalid_argument("engine_path is empty");
