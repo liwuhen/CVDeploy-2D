@@ -161,13 +161,13 @@ void DecodeProcessor::CpuDecode(float* predict, InfertMsg& infer_msg, vector<Box
     float confidence = prob * objness;
     if (confidence < parsemsgs_->obj_threshold_) continue;
 
-    float cx = pitem[0];
-    float cy = pitem[1];
-    float width = pitem[2];
+    float cx     = pitem[0];
+    float cy     = pitem[1];
+    float width  = pitem[2];
     float height = pitem[3];
-    float left = cx - width * 0.5;
-    float top = cy - height * 0.5;
-    float right = cx + width * 0.5;
+    float left   = cx - width * 0.5;
+    float top    = cy - height * 0.5;
+    float right  = cx + width * 0.5;
     float bottom = cy + height * 0.5;
 
     // 输入图像层级模型预测框 ==> 映射回原图上尺寸
