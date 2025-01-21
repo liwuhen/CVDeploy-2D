@@ -40,8 +40,7 @@ struct Box {
   int label;
 
   Box() = default;
-  Box(float left, float top, float right, float bottom, float confidence, int label)
-      : left(left), top(top), right(right), bottom(bottom), confidence(confidence), label(label) {}
+  Box(float left, float top, float right, float bottom, float confidence, int label) : left(left), top(top), right(right), bottom(bottom), confidence(confidence), label(label) {}
 
   Box operator=(const Box& obj) {
     this->left = obj.left;
@@ -55,9 +54,7 @@ struct Box {
 };
 
 struct InfertMsg {
-  InfertMsg() : width(0), height(0), frame_id(0), timestamp(0), img_size(0) {
-    this->image = cv::Mat();
-  }
+  InfertMsg() : width(0), height(0), frame_id(0), timestamp(0), img_size(0) { this->image = cv::Mat(); }
 
   InfertMsg operator=(const InfertMsg& obj) {
     this->width = obj.width;
@@ -96,8 +93,7 @@ struct CVImage {
   std::vector<uint8_t> data;  // 存储连续的像素值
 
   CVImage();
-  CVImage(int width, int height, int channel)
-      : img_width(width), img_height(height), img_channel(channel), img_size(0) {}
+  CVImage(int width, int height, int channel) : img_width(width), img_height(height), img_channel(channel), img_size(0) {}
 
   ~CVImage() {}
 

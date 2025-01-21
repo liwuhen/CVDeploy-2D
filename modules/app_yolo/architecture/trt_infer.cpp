@@ -82,6 +82,10 @@ bool TrtInfer::RunRelease() {
 bool TrtInfer::SetParam(shared_ptr<ParseMsgs>& parse_msgs) {
   if (parse_msgs != nullptr) {
     this->parsemsgs_ = parse_msgs;
+  } else {
+    this->parsemsgs_ = nullptr;
+    GLOG_ERROR("[SetParam]: TrtInfer module set param failed ");
+    return false;
   }
 
   GLOG_INFO("[SetParam]: Trt infer module set param ");
@@ -97,21 +101,16 @@ bool TrtInfer::DataResourceRelease() {}
  * @description: Inference.
  */
 bool TrtInfer::Inference(float* output_img_device) {
-  checkRuntime(cudaMemcpy(gpu_buffers_[engine_name_size_[binding_names_["input"][0]].first],
-                          output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t),
-                          cudaMemcpyDeviceToDevice));
+  checkRuntime(cudaMemcpy(gpu_buffers_[engine_name_size_[binding_names_["input"][0]].first], output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t), cudaMemcpyDeviceToDevice));
 
-  bool success =
-      execution_context_->enqueueV2(reinterpret_cast<void**>(gpu_buffers_), stream_, nullptr);
+  bool success = execution_context_->enqueueV2(reinterpret_cast<void**>(gpu_buffers_), stream_, nullptr);
   if (!success) {
     LOG(ERROR) << " Inference failed ";
     return false;
   }
 
-  checkRuntime(cudaMemcpyAsync(
-      cpu_buffers_[0], gpu_buffers_[engine_name_size_[binding_names_["output"][0]].first],
-      sizeof(float) * engine_name_size_[binding_names_["output"][0]].second, cudaMemcpyDeviceToHost,
-      stream_));
+  checkRuntime(cudaMemcpyAsync(cpu_buffers_[0], gpu_buffers_[engine_name_size_[binding_names_["output"][0]].first], sizeof(float) * engine_name_size_[binding_names_["output"][0]].second,
+                               cudaMemcpyDeviceToHost, stream_));
   checkRuntime(cudaStreamSynchronize(stream_));
 
   return true;
@@ -128,8 +127,7 @@ bool TrtInfer::BuildModel() {
     GLOG_ERROR("Can not create builder. ");
     return false;
   }
-  const auto explicitBatch =
-      1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
+  const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
   auto network = make_nvshared(builder->createNetworkV2(explicitBatch));
   if (!network) {
     GLOG_ERROR("Can not create network. ");
@@ -210,16 +208,14 @@ bool TrtInfer::ParseModel() {
   }
 
   auto runtime = unique_ptr<IRuntime, NvInferDeleter>(createInferRuntime(gLogger));
-  auto engine = unique_ptr<ICudaEngine, NvInferDeleter>(
-      runtime->deserializeCudaEngine(engine_data.data(), engine_data.size(), nullptr));
+  auto engine = unique_ptr<ICudaEngine, NvInferDeleter>(runtime->deserializeCudaEngine(engine_data.data(), engine_data.size(), nullptr));
   if (engine == nullptr) {
     GLOG_ERROR("Deserialize cuda engine failed! ");
     runtime->destroy();
     return false;
   }
 
-  execution_context_ =
-      std::unique_ptr<IExecutionContext, NvInferDeleter>(engine->createExecutionContext());
+  execution_context_ = std::unique_ptr<IExecutionContext, NvInferDeleter>(engine->createExecutionContext());
   if (execution_context_ == nullptr) {
     GLOG_ERROR("Failed to create context! ");
     return false;
@@ -271,8 +267,7 @@ bool TrtInfer::MemAllocator() {
   GLOG_INFO("Begin allocator memory ");
   // Allocate model input memory
   for (int i = 0; i < in_out_size_["input"]; i++) {
-    checkRuntime(cudaMalloc(&gpu_buffers_[i],
-                            sizeof(float) * engine_name_size_[binding_names_["input"][i]].second));
+    checkRuntime(cudaMalloc(&gpu_buffers_[i], sizeof(float) * engine_name_size_[binding_names_["input"][i]].second));
   }
 
   // Allocating memory for output data.（host）
