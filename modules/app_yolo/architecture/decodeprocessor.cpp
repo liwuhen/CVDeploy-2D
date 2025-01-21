@@ -156,7 +156,7 @@ void DecodeProcessor::ScaleBoxes(vector<Box>& box_result)
 }
 
 /**
- * @description: Box decode feature level．
+ * @description: Bounding box decoding at feature level．
  */
 void DecodeProcessor::BboxDecodeFeatureLevel(float* predict,
     InfertMsg& infer_msg, vector<Box>& box_result)
@@ -214,7 +214,7 @@ void DecodeProcessor::BboxDecodeFeatureLevel(float* predict,
 }
 
 /**
- * @description: Box decode input level．
+ * @description: Bounding box decoding at input level．
  */
 void DecodeProcessor::BboxDecodeInputLevel(float* predict,
     InfertMsg& infer_msg, vector<Box>& box_result)
