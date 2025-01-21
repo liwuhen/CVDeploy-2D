@@ -19,12 +19,16 @@
 
 #include "warpaffine.hpp"
 
-__device__ void affine_project(Matrix3f affineMatrix_inv, int x, int y, float* proj_x, float* proj_y) {
+__device__ void affine_project(Matrix3f affineMatrix_inv, int x, int y, float* proj_x,
+                               float* proj_y) {
   *proj_x = affineMatrix_inv(0, 0) * x + affineMatrix_inv(0, 1) * y + affineMatrix_inv(0, 2);
   *proj_y = affineMatrix_inv(1, 0) * x + affineMatrix_inv(1, 1) * y + affineMatrix_inv(1, 2);
 }
 
-static __global__ void warp_affine_bilinear_kernel(uint8_t* src, int batch, int src_line_size, int src_width, int src_height, float* dst, int dst_width, int dst_height, Matrix3f affineMatrix_inv,
+static __global__ void warp_affine_bilinear_kernel(uint8_t* src, int batch, int src_line_size,
+                                                   int src_width, int src_height, float* dst,
+                                                   int dst_width, int dst_height,
+                                                   Matrix3f affineMatrix_inv,
                                                    uint8_t const_value_st, AppYolo app_mode) {
   int dx = blockDim.x * blockIdx.x + threadIdx.x;
   int dy = blockDim.y * blockIdx.y + threadIdx.y;
@@ -104,10 +108,13 @@ static __global__ void warp_affine_bilinear_kernel(uint8_t* src, int batch, int 
   }
 }
 
-void warp_affine_bilinear(uint8_t* src, int batch, InfertMsg& input_msg, float* dst, int dst_width, int dst_height, uint8_t const_value, cudaStream_t stream, AppYolo app_mode) {
+void warp_affine_bilinear(uint8_t* src, int batch, InfertMsg& input_msg, float* dst, int dst_width,
+                          int dst_height, uint8_t const_value, cudaStream_t stream,
+                          AppYolo app_mode) {
   dim3 block_size(16, 16, 4);  // blocksize最大就是1024
   dim3 grid_size((dst_width + 15) / 16, (dst_height + 15) / 16, (batch + 3) / 4);
 
-  warp_affine_bilinear_kernel<<<grid_size, block_size, 0, stream>>>(src, batch, input_msg.width * 3, input_msg.width, input_msg.height, dst, dst_width, dst_height, input_msg.affineMatrix_inv,
-                                                                    const_value, app_mode);
+  warp_affine_bilinear_kernel<<<grid_size, block_size, 0, stream>>>(
+      src, batch, input_msg.width * 3, input_msg.width, input_msg.height, dst, dst_width,
+      dst_height, input_msg.affineMatrix_inv, const_value, app_mode);
 }
