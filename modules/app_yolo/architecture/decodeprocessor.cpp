@@ -259,9 +259,9 @@ void DecodeProcessor::BboxDecodeInputLevel(float* predict,
 void DecodeProcessor::CpuDecode(float* predict,
     InfertMsg& infer_msg, vector<Box>& box_result)
 {
-  if( (DecodeType)parsemsgs_->decode_type_ == DecodeType::FEATURE_LEVEL ) {
+  if((DecodeType)parsemsgs_->decode_type_ == DecodeType::FEATURE_LEVEL) {
     BboxDecodeFeatureLevel(predict, infer_msg, box_result);
-  } else if ( (DecodeType)parsemsgs_->decode_type_ == DecodeType::INPUT_LEVEL ) {
+  } else if ((DecodeType)parsemsgs_->decode_type_ == DecodeType::INPUT_LEVEL) {
     BboxDecodeInputLevel(predict, infer_msg, box_result);
   } else {
     GLOG_ERROR("[CpuDecode]: Decoding method error. ");
