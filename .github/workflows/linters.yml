@@ -49,6 +49,8 @@ jobs:
                   -build/include,\
                   -build/namespaces,\
                   -build/header_guard,\
+                  -whitespace/comma, \
+                  -whitespace/comments, \
                   -whitespace/line_length,\
                   -whitespace/indent_namespace,\
                   -runtime/string"  # Ignore runtime checks on string usage.

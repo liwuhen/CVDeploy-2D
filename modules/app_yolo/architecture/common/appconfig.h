@@ -69,7 +69,9 @@ class AppConfig {
   REG_YAML_VAR(int, dst_img_w_);
   REG_YAML_VAR(int, dst_img_h_);
   REG_YAML_VAR(int, dst_img_c_);
+  REG_YAML_VAR(int, branch_num_);
   REG_YAML_VAR(int, batchsizes_);
+  REG_YAML_VAR(int, decode_type_);
   REG_YAML_VAR(int, max_objects_);
   REG_YAML_VAR(int, model_acc_);
   REG_YAML_VAR(float, obj_threshold_);

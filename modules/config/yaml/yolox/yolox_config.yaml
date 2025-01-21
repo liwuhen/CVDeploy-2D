@@ -21,7 +21,8 @@ preprocessor_config:
   dst_img_channel: 3
 
 predict_config:
-  decode_type: fpnv1
+  decode_type: 1
+  branch_num: 1
   predict_dim: [1, 3549, 85]
   max_objects: 0
   obj_threshold: 0.25

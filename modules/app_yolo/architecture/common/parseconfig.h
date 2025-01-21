@@ -69,7 +69,9 @@ class ParseMsgs {
   int dst_img_c_;        // Target image channel
   int dstimg_size_;      // Target image size
   int model_acc_;        // Model quantisation accuracy
+  int branch_num_;       // Model branch number
   int batchsizes_;       // Batch size
+  int decode_type_;      // Decode type
   int max_objects_;      // Maximum number of targets
   float obj_threshold_;  // Target Thresholds
   float nms_threshold_;  // Nms Target Thresholds

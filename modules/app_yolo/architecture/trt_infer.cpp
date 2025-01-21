@@ -101,16 +101,22 @@ bool TrtInfer::DataResourceRelease() {}
  * @description: Inference.
  */
 bool TrtInfer::Inference(float* output_img_device) {
-  checkRuntime(cudaMemcpy(gpu_buffers_[engine_name_size_[binding_names_["input"][0]].first], output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t), cudaMemcpyDeviceToDevice));
+  checkRuntime(cudaMemcpy(gpu_buffers_[engine_name_size_[binding_names_["input"][0]].first],\
+      output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t), cudaMemcpyDeviceToDevice));
 
-  bool success = execution_context_->enqueueV2(reinterpret_cast<void**>(gpu_buffers_), stream_, nullptr);
+  void** binding = reinterpret_cast<void**>(gpu_buffers_.data());
+  bool success = execution_context_->enqueueV2(binding, stream_, nullptr);
   if (!success) {
-    LOG(ERROR) << " Inference failed ";
+    GLOG_ERROR(" Inference failed ");
     return false;
   }
 
-  checkRuntime(cudaMemcpyAsync(cpu_buffers_[0], gpu_buffers_[engine_name_size_[binding_names_["output"][0]].first], sizeof(float) * engine_name_size_[binding_names_["output"][0]].second,
-                               cudaMemcpyDeviceToHost, stream_));
+  for (int index = 0; index < parsemsgs_->branch_num_; index++) {
+    checkRuntime(cudaMemcpyAsync(cpu_buffers_[index], gpu_buffers_[engine_name_size_[binding_names_["output"][index]].first],\
+      sizeof(float) * engine_name_size_[binding_names_["output"][index]].second, cudaMemcpyDeviceToHost, stream_));
+
+  }
+
   checkRuntime(cudaStreamSynchronize(stream_));
 
   return true;
@@ -170,10 +176,10 @@ bool TrtInfer::BuildModel() {
   }
 
   GLOG_INFO("Build model acc[0-fp32, 1-fp16, 2-int8]:  " << parsemsgs_->model_acc_);
-  int maxBatchSize = 10;
-  auto profile = builder->createOptimizationProfile();
+  int maxBatchSize  = 10;
+  auto profile      = builder->createOptimizationProfile();
   auto input_tensor = network->getInput(0);
-  auto input_dims = input_tensor->getDimensions();
+  auto input_dims   = input_tensor->getDimensions();
 
   input_dims.d[0] = 1;
   profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMIN, input_dims);
@@ -208,7 +214,7 @@ bool TrtInfer::ParseModel() {
   }
 
   auto runtime = unique_ptr<IRuntime, NvInferDeleter>(createInferRuntime(gLogger));
-  auto engine = unique_ptr<ICudaEngine, NvInferDeleter>(runtime->deserializeCudaEngine(engine_data.data(), engine_data.size(), nullptr));
+  auto engine  = unique_ptr<ICudaEngine, NvInferDeleter>(runtime->deserializeCudaEngine(engine_data.data(), engine_data.size(), nullptr));
   if (engine == nullptr) {
     GLOG_ERROR("Deserialize cuda engine failed! ");
     runtime->destroy();
@@ -231,7 +237,7 @@ bool TrtInfer::ParseModel() {
   for (int i = 0; i < nb_bindings; i++) {
     size_t size(1);
     string name = execution_context_->getEngine().getBindingName(i);
-    auto dim = execution_context_->getBindingDimensions(i);
+    auto dim    = execution_context_->getBindingDimensions(i);
 
     // < tensorrt 8.5
     switch (execution_context_->getEngine().bindingIsInput(i)) {
@@ -249,7 +255,7 @@ bool TrtInfer::ParseModel() {
       size *= dim.d[j];
     }
 
-    in_out_size_["input"] = in_size;
+    in_out_size_["input"]  = in_size;
     in_out_size_["output"] = out_size;
 
     engine_name_size_.emplace(name, make_pair(i, size));
@@ -265,6 +271,10 @@ bool TrtInfer::ParseModel() {
  */
 bool TrtInfer::MemAllocator() {
   GLOG_INFO("Begin allocator memory ");
+
+  gpu_buffers_.resize(in_out_size_["input"] + in_out_size_["output"]);
+  cpu_buffers_.resize(in_out_size_["output"]);
+
   // Allocate model input memory
   for (int i = 0; i < in_out_size_["input"]; i++) {
     checkRuntime(cudaMalloc(&gpu_buffers_[i], sizeof(float) * engine_name_size_[binding_names_["input"][i]].second));
