@@ -88,8 +88,7 @@ bool DecodeProcessor::DataResourceRelease() {}
  * @description: Inference
  */
 bool DecodeProcessor::Inference(float* predict,
-    InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue)
-{
+    InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue) {
   imgshape_["src"] = make_pair(infer_msg.height, infer_msg.width);
 
   vector<Box> box_result;
@@ -111,8 +110,7 @@ bool DecodeProcessor::Inference(float* predict,
  * @description: Visualization
  */
 void DecodeProcessor::Visualization(bool real_time,
-    cv::Mat& img, int64_t timestamp, vector<Box>& results)
-{
+    cv::Mat& img, int64_t timestamp, vector<Box>& results) {
   for (auto& box : results) {
     cv::Scalar color;
     tie(color[0], color[1], color[2]) = random_color(box.label);
@@ -137,8 +135,7 @@ void DecodeProcessor::Visualization(bool real_time,
 /**
  * @description: Bbox mapping to original map scale.
  */
-void DecodeProcessor::ScaleBoxes(vector<Box>& box_result)
-{
+void DecodeProcessor::ScaleBoxes(vector<Box>& box_result) {
   float gain  = min(imgshape_["dst"].first / static_cast<float>(imgshape_["src"].first),\
                 imgshape_["dst"].second / static_cast<float>(imgshape_["src"].second));
   float pad[] = {(imgshape_["dst"].second - imgshape_["src"].second * gain) * 0.5, \
@@ -217,8 +214,7 @@ void DecodeProcessor::BboxDecodeFeatureLevel(float* predict,
  * @description: Bounding box decoding at input level．
  */
 void DecodeProcessor::BboxDecodeInputLevel(float* predict,
-    InfertMsg& infer_msg, vector<Box>& box_result)
-{
+    InfertMsg& infer_msg, vector<Box>& box_result) {
   vector<Box> boxes;
   int num_classes = parsemsgs_->predict_dim_[2] - 5;
   for (int i = 0; i < parsemsgs_->predict_dim_[1]; ++i)
@@ -257,8 +253,7 @@ void DecodeProcessor::BboxDecodeInputLevel(float* predict,
  * @description: Cpu decode．
  */
 void DecodeProcessor::CpuDecode(float* predict,
-    InfertMsg& infer_msg, vector<Box>& box_result)
-{
+    InfertMsg& infer_msg, vector<Box>& box_result) {
   if((DecodeType)parsemsgs_->decode_type_ == DecodeType::FEATURE_LEVEL) {
     BboxDecodeFeatureLevel(predict, infer_msg, box_result);
   } else if ((DecodeType)parsemsgs_->decode_type_ == DecodeType::INPUT_LEVEL) {
