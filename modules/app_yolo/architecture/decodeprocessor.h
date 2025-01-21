@@ -36,7 +36,9 @@
 #include "common.hpp"
 #include "dataset.h"
 #include "module.h"
+#include "nms.h"
 #include "parseconfig.h"
+#include "plugin.h"
 #include "std_buffer.h"
 #include "task_struct.hpp"
 
@@ -130,13 +132,6 @@ class DecodeProcessor : public InferModuleBase {
   }
 
   /**
-   * @brief     Nms．
-   * @param[in] [vector<Box>&, vector<Box>&, float]．
-   * @return    void.
-   */
-  void Nms(vector<Box>& boxes, vector<Box>& box_result, float nms_threshold = 0.2f);
-
-  /**
    * @brief     Bbox mapping to original map scale.
    * @param[in] [vector<Box>&, std::map<string, pair<int, int>>&]．
    * @return    void.
@@ -148,12 +143,14 @@ class DecodeProcessor : public InferModuleBase {
    * @param[in] [float*, vector<Box>&]．
    * @return    void.
    */
-  void CpuDecode(float* predict, vector<Box>& box_result);
+  void CpuDecode(float* predict, InfertMsg& infer_msg, vector<Box>& box_result);
 
  private:
   std::atomic<bool> running_;
 
   InfertMsg output_msg_;
+
+  shared_ptr<NmsPlugin> nms_plugin_;
 
   shared_ptr<ParseMsgs> parsemsgs_;
 

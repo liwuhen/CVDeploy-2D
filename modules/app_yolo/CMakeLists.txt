@@ -26,6 +26,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/architecture
   ${PROJECT_SOURCE_DIR}/architecture/cuda
   ${PROJECT_SOURCE_DIR}/architecture/common
+  ${PROJECT_SOURCE_DIR}/architecture/decode
   ${PROJECT_SOURCE_DIR}/architecture/module
   ${CMAKE_PATH}/modules/common/utils
   ${CMAKE_PATH}/modules/common/logging
@@ -50,6 +51,7 @@ file(
   ${PROJECT_SOURCE_DIR}/architecture/*.cpp
   ${PROJECT_SOURCE_DIR}/architecture/cuda/*.cpp
   ${PROJECT_SOURCE_DIR}/architecture/common/*.cpp
+  ${PROJECT_SOURCE_DIR}/architecture/decode/*.cpp
   ${CMAKE_PATH}/modules/common/logging/*.cpp)
 
 cuda_add_library(${MODEL_FLAG}_gpu_proprecessor SHARED
