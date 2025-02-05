@@ -53,9 +53,6 @@ class DecodeModuleBase {
   virtual bool RunRelease() = 0;
 
   virtual bool SetParam(shared_ptr<ParseMsgs>& parse_msgs) = 0;
-
- public:
-
 };
 
 }  // namespace appinfer

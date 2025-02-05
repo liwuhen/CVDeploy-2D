@@ -63,8 +63,7 @@ bool ModelDecode::SetParam(shared_ptr<ParseMsgs>& parse_msgs) {
 /**
  * @description: Cal anchor.
  */
-AnchorPointsVector ModelDecode::Generate_Anchor_Points()
-{
+AnchorPointsVector ModelDecode::Generate_Anchor_Points() {
     AnchorPointsVector anchor_points;
     for (int i = 0; i < 3; i++) {
         std::vector<std::pair<int, int>> anchors;
@@ -84,8 +83,7 @@ AnchorPointsVector ModelDecode::Generate_Anchor_Points()
  * @description: Bounding box decoding at feature level．
  */
 void ModelDecode::BboxDecodeFeatureLevel(std::vector<float*>& predict,
-    InfertMsg& infer_msg, vector<Box>& box_result)
-{
+    InfertMsg& infer_msg, vector<Box>& box_result) {
   int label     = 0;
   float prob    = 0.0f;
   float objness = 0.0f;
@@ -107,13 +105,11 @@ void ModelDecode::BboxDecodeFeatureLevel(std::vector<float*>& predict,
         grid_x = anchor_points_[0][i].first;
         grid_y = anchor_points_[0][i].second;
         stride = 8;
-    }
-    else if (i >= l_size && i < l_size + d_size) {
+    } else if (i >= l_size && i < l_size + d_size) {
         grid_x = anchor_points_[1][i-l_size].first;
         grid_y = anchor_points_[1][i-l_size].second;
         stride = 16;
-    }
-    else if (i >= l_size + d_size && i < l_size + d_size + s_size) {
+    } else if (i >= l_size + d_size && i < l_size + d_size + s_size) {
         grid_x = anchor_points_[2][i-l_size-d_size].first;
         grid_y = anchor_points_[2][i-l_size-d_size].second;
         stride = 32;

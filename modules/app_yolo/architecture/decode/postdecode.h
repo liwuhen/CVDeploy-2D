@@ -60,8 +60,8 @@ using AnchorPointsVector = std::vector<std::vector<std::pair<int, int>>>;using A
  */
 class ModelDecode : public DecodeModuleBase {
  public:
-  ModelDecode() {};
-  ~ModelDecode() {};
+  ModelDecode() {}
+  ~ModelDecode() {}
 
   /**
    * @brief     init．
@@ -136,7 +136,6 @@ class ModelDecode : public DecodeModuleBase {
   void ScaleBoxes(vector<Box>& box_result);
 
  private:
-
   std::atomic<bool> running_;
 
   InfertMsg output_msg_;
