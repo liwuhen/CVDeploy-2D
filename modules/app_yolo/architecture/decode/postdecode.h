@@ -16,8 +16,8 @@
 * ===================================================================
 */
 
-#ifndef APP_YOLO_POSTPROCESSOR_H__
-#define APP_YOLO_POSTPROCESSOR_H__
+#ifndef APP_YOLO_POSTDECODE_H__
+#define APP_YOLO_POSTDECODE_H__
 
 #include <glog/logging.h>
 #include <stdio.h>
@@ -33,11 +33,12 @@
 #include <tuple>
 #include <vector>
 
+#include "nms.h"
 #include "common.hpp"
-#include "inference.h"
+#include "dataset.h"
 #include "module.h"
+#include "decode.h"
 #include "parseconfig.h"
-#include "std_buffer.h"
 #include "task_struct.hpp"
 
 /**
@@ -51,14 +52,16 @@ using namespace std;
 using namespace cv;
 using namespace hpc::common;
 
+using AnchorPointsVector = std::vector<std::vector<std::pair<int, int>>>;using AnchorPointsVector = std::vector<std::vector<std::pair<int, int>>>;
+
 /**
- * @class PostProcessor.
- * @brief Algorithmic post-processing.
+ * @class ModelDecode.
+ * @brief Bbox decode.
  */
-class PostProcessor : public InferModuleBase {
+class ModelDecode : public DecodeModuleBase {
  public:
-  PostProcessor();
-  ~PostProcessor();
+  ModelDecode() {}
+  ~ModelDecode() {}
 
   /**
    * @brief     init．
@@ -95,39 +98,59 @@ class PostProcessor : public InferModuleBase {
    */
   bool SetParam(shared_ptr<ParseMsgs>& parse_msgs) override;
 
+  /**
+   * @brief     Cal anchor．
+   * @param[in] ．
+   * @return    AnchorPointsVector.
+   */
+  AnchorPointsVector Generate_Anchor_Points();
+  /**
+   * @brief     Box decode feature level．
+   * @param[in] [float*, InfertMsg&, vector<Box>&]．
+   * @return    void.
+   */
+  void BboxDecodeFeatureLevel(std::vector<float*>& predict,
+    InfertMsg& infer_msg, vector<Box>& box_result);
+
+  /**
+   * @brief     Box decode input level．
+   * @param[in] [float*, InfertMsg&, vector<Box>&]．
+   * @return    void.
+   */
+  void BboxDecodeInputLevel(std::vector<float*>& predict,
+    InfertMsg& infer_msg, vector<Box>& box_result);
+
  private:
   /**
    * @brief     Module resource release.
    * @param[in] void．
    * @return    bool.
    */
-  bool DataResourceRelease();
+  bool DataResourceRelease() {};
 
   /**
-   * @brief     Inference.
-   * @param[in] void.
-   * @return    bool.
-   */
-  void Inference();
-
-  /**
-   * @brief     Visualization.
-   * @param[in] [bool, cv::Mat&, int64_t, vector<Box>&].
+   * @brief     Bbox mapping to original map scale.
+   * @param[in] [vector<Box>&, std::map<string, pair<int, int>>&]．
    * @return    void.
    */
-  void Visualization(bool real_time, cv::Mat& img, int64_t timestamp, vector<Box>& results);
+  void ScaleBoxes(vector<Box>& box_result);
 
  private:
   std::atomic<bool> running_;
 
   InfertMsg output_msg_;
 
+  AnchorPointsVector anchor_points_;
+
+  shared_ptr<NmsPlugin> nms_plugin_;
+
   shared_ptr<ParseMsgs> parsemsgs_;
-  std::shared_ptr<std::thread> worker_ptr_;
-  std::shared_ptr<InferenceEngine> inference_;
+
+  std::map<string, pair<int, int>> imgshape_;
+  std::vector<std::pair<int, int>> feat_sizes_;
 };
 
 }  // namespace appinfer
 }  // namespace hpc
 
-#endif  // APP_YOLO_POSTPROCESSOR_H__
+#endif  // APP_YOLO_POSTDECODE_H__

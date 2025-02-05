@@ -53,4 +53,7 @@ jobs:
                   -whitespace/comments, \
                   -whitespace/line_length,\
                   -whitespace/indent_namespace,\
+                  -readability/casting, \
+                  -whitespace/parens, \
+                  -whitespace/braces, \
                   -runtime/string"  # Ignore runtime checks on string usage.

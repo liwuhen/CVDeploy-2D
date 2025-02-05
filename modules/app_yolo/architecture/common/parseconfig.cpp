@@ -39,6 +39,7 @@ void ParseMsgs::ReadYamlParam() {
   dst_img_c_ = app_config->get_dst_img_c_();
   model_acc_ = app_config->get_model_acc_();
   branch_num_    = app_config->get_branch_num_();
+  branchs_dim_   = app_config->get_branchs_dim_();
   batchsizes_    = app_config->get_batchsizes_();
   predict_dim_   = app_config->get_predict_dim_();
   decode_type_   = app_config->get_decode_type_();

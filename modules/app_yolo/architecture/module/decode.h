@@ -16,29 +16,46 @@
 * ===================================================================
 */
 
-#ifndef APP_COMMON_STD_TIME_H__
-#define APP_COMMON_STD_TIME_H__
+#ifndef APP_YOLO_DECODE_H__
+#define APP_YOLO_DECODE_H__
 
-#include <chrono>
-#include <condition_variable>
-#include <functional>
 #include <iostream>
-#include <list>
 #include <memory>
 #include <mutex>
-#include <queue>
-#include <string>
+#include <unordered_map>
 
+#include "module_struct.h"
+#include "parseconfig.h"
+/**
+ * @namespace hpc::appinfer
+ * @brief hpc::appinfer
+ */
 namespace hpc {
-namespace common {
+namespace appinfer {
 
-static time_t GetSystmeTime() {
-  return static_cast<int64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(
-                                  std::chrono::system_clock::now().time_since_epoch())
-                                  .count());
-}
+using namespace std;
+using namespace hpc::common;
+/**
+ * @class DecodeModuleBase.
+ * @brief Model decode base.
+ */
+class DecodeModuleBase {
+ public:
+  DecodeModuleBase() {}
+  virtual ~DecodeModuleBase() = default;
 
-}  // namespace common
+  virtual bool Init() = 0;
+
+  virtual bool RunStart() = 0;
+
+  virtual bool RunStop() = 0;
+
+  virtual bool RunRelease() = 0;
+
+  virtual bool SetParam(shared_ptr<ParseMsgs>& parse_msgs) = 0;
+};
+
+}  // namespace appinfer
 }  // namespace hpc
 
-#endif  // APP_COMMON_STD_TIME_H__
+#endif  // APP_YOLO_DECODE_H__
