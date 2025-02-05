@@ -85,7 +85,8 @@ class ParseMsgs {
   std::string log_path_;      // log file path
   std::string imgs_path_;     // Offline test image collection path
 
-  std::vector<int> predict_dim_;  // Model prediction output dimensions
+  std::vector<std::vector<int>> predict_dim_;  // Model prediction output dimensions
+  std::vector<std::vector<int>> branchs_dim_;
 };
 
 }  // namespace common

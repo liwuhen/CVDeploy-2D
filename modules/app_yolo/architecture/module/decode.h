@@ -16,56 +16,49 @@
 * ===================================================================
 */
 
-#ifndef APP_COMMON_IMAGE_MSG_H__
-#define APP_COMMON_IMAGE_MSG_H__
+#ifndef APP_YOLO_DECODE_H__
+#define APP_YOLO_DECODE_H__
 
-#include <functional>
 #include <iostream>
-#include <list>
 #include <memory>
 #include <mutex>
-#include <opencv2/opencv.hpp>
-#include <queue>
-#include <string>
+#include <unordered_map>
 
-#include "std_buffer.h"
-
+#include "module_struct.h"
+#include "parseconfig.h"
+/**
+ * @namespace hpc::appinfer
+ * @brief hpc::appinfer
+ */
 namespace hpc {
+namespace appinfer {
 
-namespace common {
-
-class ImageInfos {
+using namespace std;
+using namespace hpc::common;
+/**
+ * @class DecodeModuleBase.
+ * @brief Model decode base.
+ */
+class DecodeModuleBase {
  public:
-  ImageInfos() {
-    width_ = 0;
-    height_ = 0;
-    frame_id_ = 0;
-    timestamp_ = 0;
-    image_ = cv::Mat();
-  }
-  ~ImageInfos() {}
+  DecodeModuleBase() {}
+  virtual ~DecodeModuleBase() = default;
 
-  bool DeepCopy(const ImageInfos* src) {
-    this->image_ = src->image_.clone();
-    return true;
-  }
+  virtual bool Init() = 0;
 
-  bool MoveCopy(const ImageInfos* src) {
-    this->image_ = std::move(src->image_);
-    return true;
-  }
+  virtual bool RunStart() = 0;
+
+  virtual bool RunStop() = 0;
+
+  virtual bool RunRelease() = 0;
+
+  virtual bool SetParam(shared_ptr<ParseMsgs>& parse_msgs) = 0;
 
  public:
-  uint16_t width_;
-  uint16_t height_;
-  uint32_t frame_id_;
-  int64_t timestamp_;
-  cv::Mat image_;
+
 };
 
-typedef std::shared_ptr<ImageInfos> image_ptr;
-
-}  // namespace common
+}  // namespace appinfer
 }  // namespace hpc
 
-#endif  // APP_COMMON_IMAGE_MSG_H__
+#endif  // APP_YOLO_DECODE_H__

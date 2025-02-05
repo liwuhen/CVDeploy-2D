@@ -84,7 +84,8 @@ class AppConfig {
   REG_YAML_VAR(std::string, predict_path_);
   REG_YAML_VAR(std::string, log_path_);
 
-  REG_YAML_VAR(std::vector<int>, predict_dim_);
+  REG_YAML_VAR(std::vector<std::vector<int>>, predict_dim_);
+  REG_YAML_VAR(std::vector<std::vector<int>>, branchs_dim_);
 
  protected:
   explicit AppConfig(const std::string& config_filename);

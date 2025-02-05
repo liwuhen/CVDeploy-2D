@@ -44,7 +44,8 @@ std::string AppConfig::predict_path_;
 std::string AppConfig::log_path_;
 std::string AppConfig::imgs_path_;
 
-std::vector<int> AppConfig::predict_dim_;
+std::vector<std::vector<int>> AppConfig::predict_dim_;
+std::vector<std::vector<int>> AppConfig::branchs_dim_;
 
 YAML::Node& AppConfig::getYamlNode() { return yaml_node_; }
 
@@ -91,7 +92,6 @@ AppConfig::AppConfig(const std::string& config_filename) : config_filename_(conf
   dst_img_c_   = yaml_node_["preprocessor_config"]["dst_img_channel"].as<int>();
   batchsizes_  = yaml_node_["preprocessor_config"]["batch_size"].as<int>();
   branch_num_  = yaml_node_["predict_config"]["branch_num"].as<int>();
-  predict_dim_ = yaml_node_["predict_config"]["predict_dim"].as<std::vector<int>>();
   decode_type_ = yaml_node_["predict_config"]["decode_type"].as<int>();
   max_objects_ = yaml_node_["predict_config"]["max_objects"].as<int>();
   obj_threshold_ = yaml_node_["predict_config"]["obj_threshold"].as<float>();
@@ -104,6 +104,14 @@ AppConfig::AppConfig(const std::string& config_filename) : config_filename_(conf
   predict_path_  = yaml_node_["inference_config"]["predict_path"].as<std::string>();
   log_path_      = yaml_node_["common_config"]["log_path"].as<std::string>();
   imgs_path_     = yaml_node_["common_config"]["imgs_path"].as<std::string>();
+
+  for (int index = 0; index < yaml_node_["predict_config"]["predict_dim"].size(); index++) {
+    predict_dim_.push_back(yaml_node_["predict_config"]["predict_dim"][index].as<std::vector<int>>());
+  }
+
+  for (int index = 0; index < yaml_node_["predict_config"]["branchs_dim"].size(); index++) {
+    branchs_dim_.push_back(yaml_node_["predict_config"]["branchs_dim"][index].as<std::vector<int>>());
+  }
 
   if (trt_path_ == "") {
     throw std::invalid_argument("engine_path is empty");
