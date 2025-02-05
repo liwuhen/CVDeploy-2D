@@ -16,17 +16,49 @@
 * ===================================================================
 */
 
-#ifndef APP_COMMON_STD_CMAKE_H_IN__
-#define APP_COMMON_STD_CMAKE_H_IN__
+#ifndef APP_YOLO_DECODE_H__
+#define APP_YOLO_DECODE_H__
 
 #include <iostream>
+#include <memory>
+#include <mutex>
+#include <unordered_map>
 
+#include "module_struct.h"
+#include "parseconfig.h"
+/**
+ * @namespace hpc::appinfer
+ * @brief hpc::appinfer
+ */
 namespace hpc {
-namespace common {
+namespace appinfer {
 
-#define MODEL_FLAG "yolov5"
+using namespace std;
+using namespace hpc::common;
+/**
+ * @class DecodeModuleBase.
+ * @brief Model decode base.
+ */
+class DecodeModuleBase {
+ public:
+  DecodeModuleBase() {}
+  virtual ~DecodeModuleBase() = default;
 
-} //namespace common
-} //namespace hpc
+  virtual bool Init() = 0;
 
-#endif // APP_COMMON_STD_CMAKE_H_IN__
+  virtual bool RunStart() = 0;
+
+  virtual bool RunStop() = 0;
+
+  virtual bool RunRelease() = 0;
+
+  virtual bool SetParam(shared_ptr<ParseMsgs>& parse_msgs) = 0;
+
+ public:
+
+};
+
+}  // namespace appinfer
+}  // namespace hpc
+
+#endif  // APP_YOLO_DECODE_H__

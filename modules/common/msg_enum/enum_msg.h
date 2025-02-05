@@ -34,6 +34,14 @@ typedef enum class device_mode_ : uint8_t { GPU_MODE = 0, CPU_MODE } DeviceMode;
 
 typedef enum class app_yolo_ : uint8_t { YOLOV5_MODE = 0, YOLOX_MODE } AppYolo;
 
+typedef enum class yolo_decode_ : uint8_t { FEATURE_LEVEL = 0, INPUT_LEVEL } DecodeType;
+
+typedef enum class yolo_decode_branch_ : uint8_t {
+    FEATURE_ONE = 0,
+    FEATURE_SECOND,
+    FEATURE_THREE
+} DecodeBranch;
+
 }  // namespace common
 }  // namespace hpc
 

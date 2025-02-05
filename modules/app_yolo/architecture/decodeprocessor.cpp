@@ -30,9 +30,9 @@ DecodeProcessor::~DecodeProcessor() {}
  * @description: init．
  */
 bool DecodeProcessor::Init() {
-  nms_plugin_ = std::make_shared<NmsPlugin>();
-  nms_plugin_->SetParam(parsemsgs_);
-  nms_plugin_->Init();
+  model_decode_ = std::make_shared<ModelDecode>();
+  model_decode_->SetParam(parsemsgs_);
+  model_decode_->Init();
 
   GLOG_INFO("[Init]: DecodeProcessor module init ");
   return true;
@@ -87,7 +87,8 @@ bool DecodeProcessor::DataResourceRelease() {}
 /**
  * @description: Inference
  */
-bool DecodeProcessor::Inference(float* predict, InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue) {
+bool DecodeProcessor::Inference(std::vector<float*>& predict,
+    InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue) {
   imgshape_["src"] = make_pair(infer_msg.height, infer_msg.width);
 
   vector<Box> box_result;
@@ -108,7 +109,8 @@ bool DecodeProcessor::Inference(float* predict, InfertMsg& infer_msg, std::share
 /**
  * @description: Visualization
  */
-void DecodeProcessor::Visualization(bool real_time, cv::Mat& img, int64_t timestamp, vector<Box>& results) {
+void DecodeProcessor::Visualization(bool real_time,
+    cv::Mat& img, int64_t timestamp, vector<Box>& results) {
   for (auto& box : results) {
     cv::Scalar color;
     tie(color[0], color[1], color[2]) = random_color(box.label);
@@ -134,52 +136,35 @@ void DecodeProcessor::Visualization(bool real_time, cv::Mat& img, int64_t timest
  * @description: Bbox mapping to original map scale.
  */
 void DecodeProcessor::ScaleBoxes(vector<Box>& box_result) {
-  float gain = min(imgshape_["dst"].first / static_cast<float>(imgshape_["src"].first), imgshape_["dst"].second / static_cast<float>(imgshape_["src"].second));
-  float pad[] = {(imgshape_["dst"].second - imgshape_["src"].second * gain) * 0.5, (imgshape_["dst"].first - imgshape_["src"].first * gain) * 0.5};
+  float gain  = min(imgshape_["dst"].first / static_cast<float>(imgshape_["src"].first),\
+                imgshape_["dst"].second / static_cast<float>(imgshape_["src"].second));
+  float pad[] = {(imgshape_["dst"].second - imgshape_["src"].second * gain) * 0.5, \
+                (imgshape_["dst"].first - imgshape_["src"].first * gain) * 0.5};
   for (int index = 0; index < box_result.size(); index++) {
-    box_result[index].left = clamp((box_result[index].left - pad[0]) / gain, 0.0f, static_cast<float>(imgshape_["src"].second));
-    box_result[index].right = clamp((box_result[index].right - pad[0]) / gain, 0.0f, static_cast<float>(imgshape_["src"].second));
-    box_result[index].top = clamp((box_result[index].top - pad[1]) / gain, 0.0f, static_cast<float>(imgshape_["src"].first));
-    box_result[index].bottom = clamp((box_result[index].bottom - pad[1]) / gain, 0.0f, static_cast<float>(imgshape_["src"].first));
+    box_result[index].left   = clamp((box_result[index].left - pad[0]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].second));
+    box_result[index].right  = clamp((box_result[index].right - pad[0]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].second));
+    box_result[index].top    = clamp((box_result[index].top - pad[1]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].first));
+    box_result[index].bottom = clamp((box_result[index].bottom - pad[1]) / gain, 0.0f, \
+                               static_cast<float>(imgshape_["src"].first));
   }
 }
 
 /**
  * @description: Cpu decode．
  */
-void DecodeProcessor::CpuDecode(float* predict, InfertMsg& infer_msg, vector<Box>& box_result) {
-  vector<Box> boxes;
-  int num_classes = parsemsgs_->predict_dim_[2] - 5;
-  for (int i = 0; i < parsemsgs_->predict_dim_[1]; ++i) {
-    float* pitem = predict + i * parsemsgs_->predict_dim_[2];
-    float objness = pitem[4];
-    if (objness < parsemsgs_->obj_threshold_) continue;
-    float* pclass = pitem + 5;
+void DecodeProcessor::CpuDecode(std::vector<float*>& predict,
+    InfertMsg& infer_msg, vector<Box>& box_result) {
 
-    int label = std::max_element(pclass, pclass + num_classes) - pclass;
-    float prob = pclass[label];
-    float confidence = prob * objness;
-    if (confidence < parsemsgs_->obj_threshold_) continue;
-
-    float cx     = pitem[0];
-    float cy     = pitem[1];
-    float width  = pitem[2];
-    float height = pitem[3];
-    float left   = cx - width * 0.5;
-    float top    = cy - height * 0.5;
-    float right  = cx + width * 0.5;
-    float bottom = cy + height * 0.5;
-
-    // 输入图像层级模型预测框 ==> 映射回原图上尺寸
-    float image_left = infer_msg.affineMatrix_inv(0, 0) * left + infer_msg.affineMatrix_inv(0, 2);
-    float image_top = infer_msg.affineMatrix_inv(1, 1) * top + infer_msg.affineMatrix_inv(1, 2);
-    float image_right = infer_msg.affineMatrix_inv(0, 0) * right + infer_msg.affineMatrix_inv(0, 2);
-    float image_bottom = infer_msg.affineMatrix_inv(1, 1) * bottom + infer_msg.affineMatrix_inv(1, 2);
-
-    boxes.emplace_back(image_left, image_top, image_right, image_bottom, confidence, label);
+  if((DecodeType)parsemsgs_->decode_type_ == DecodeType::FEATURE_LEVEL) {
+    model_decode_->BboxDecodeFeatureLevel(predict, infer_msg, box_result);
+  } else if ((DecodeType)parsemsgs_->decode_type_ == DecodeType::INPUT_LEVEL) {
+    model_decode_->BboxDecodeInputLevel(predict, infer_msg, box_result);
+  } else {
+    GLOG_ERROR("[CpuDecode]: Decoding method error. ");
   }
-
-  nms_plugin_->Nms(boxes, box_result, parsemsgs_->nms_threshold_);
 }
 
 }  // namespace appinfer

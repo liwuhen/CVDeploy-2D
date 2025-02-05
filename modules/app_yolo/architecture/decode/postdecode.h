@@ -16,29 +16,30 @@
 * ===================================================================
 */
 
-#ifndef APP_YOLO_TRT_INFER_H__
-#define APP_YOLO_TRT_INFER_H__
+#ifndef APP_YOLO_POSTDECODE_H__
+#define APP_YOLO_POSTDECODE_H__
 
 #include <glog/logging.h>
-#include <math.h>
 #include <stdio.h>
+#include <time.h>
 
+#include <chrono>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <iostream>
 #include <map>
-#include <memory>
+#include <mutex>
+#include <tuple>
 #include <vector>
 
+#include "nms.h"
 #include "common.hpp"
-#include "enum_msg.h"
-#include "logger.h"
+#include "dataset.h"
 #include "module.h"
+#include "decode.h"
 #include "parseconfig.h"
-#include "std_buffer.h"
-#include "std_cmake.h"
 #include "task_struct.hpp"
-#include "utils.hpp"
 
 /**
  * @namespace hpc::appinfer
@@ -48,18 +49,19 @@ namespace hpc {
 namespace appinfer {
 
 using namespace std;
-using namespace nvinfer1;
-using namespace nvonnxparser;
+using namespace cv;
 using namespace hpc::common;
 
+using AnchorPointsVector = std::vector<std::vector<std::pair<int, int>>>;using AnchorPointsVector = std::vector<std::vector<std::pair<int, int>>>;
+
 /**
- * @class TrtInfer.
- * @brief Trt model infer.
+ * @class ModelDecode.
+ * @brief Bbox decode.
  */
-class TrtInfer : public InferModuleBase {
+class ModelDecode : public DecodeModuleBase {
  public:
-  TrtInfer();
-  ~TrtInfer();
+  ModelDecode() {};
+  ~ModelDecode() {};
 
   /**
    * @brief     init．
@@ -97,25 +99,26 @@ class TrtInfer : public InferModuleBase {
   bool SetParam(shared_ptr<ParseMsgs>& parse_msgs) override;
 
   /**
-   * @brief     Cpu and gpu memory free.
-   * @param[in] void．
-   * @return    bool.
+   * @brief     Cal anchor．
+   * @param[in] ．
+   * @return    AnchorPointsVector.
    */
-  bool MemFree();
+  AnchorPointsVector Generate_Anchor_Points();
+  /**
+   * @brief     Box decode feature level．
+   * @param[in] [float*, InfertMsg&, vector<Box>&]．
+   * @return    void.
+   */
+  void BboxDecodeFeatureLevel(std::vector<float*>& predict,
+    InfertMsg& infer_msg, vector<Box>& box_result);
 
   /**
-   * @brief     Load file.
-   * @param[in] const string&.
-   * @return    bool.
+   * @brief     Box decode input level．
+   * @param[in] [float*, InfertMsg&, vector<Box>&]．
+   * @return    void.
    */
-  std::vector<uint8_t> LoadFile(const string& file);
-
-  /**
-   * @brief     Inference.
-   * @param[in] float*.
-   * @return    bool.
-   */
-  bool Inference(float* output_img_device);
+  void BboxDecodeInputLevel(std::vector<float*>& predict,
+    InfertMsg& infer_msg, vector<Box>& box_result);
 
  private:
   /**
@@ -123,56 +126,32 @@ class TrtInfer : public InferModuleBase {
    * @param[in] void．
    * @return    bool.
    */
-  bool DataResourceRelease();
+  bool DataResourceRelease() {};
 
   /**
-   * @brief     Build trt model from onnx.
-   * @param[in] void．
-   * @return    bool.
+   * @brief     Bbox mapping to original map scale.
+   * @param[in] [vector<Box>&, std::map<string, pair<int, int>>&]．
+   * @return    void.
    */
-  bool BuildModel();
-
-  /**
-   * @brief     Parse model.
-   * @param[in] void．
-   * @return    bool.
-   */
-  bool ParseModel();
-
-  /**
-   * @brief     Generate smart pointer for nvidia function.
-   * @param[in] _T．
-   * @return    _T.
-   */
-  template <typename _T>
-  shared_ptr<_T> make_nvshared(_T* ptr) {
-    return shared_ptr<_T>(ptr, [](_T* p) { p->destroy(); });
-  }
-
-  /**
-   * @brief     Memory allocator.
-   * @param[in] void．
-   * @return    bool.
-   */
-  bool MemAllocator();
-
- public:
-  std::vector<float *> cpu_buffers_;
+  void ScaleBoxes(vector<Box>& box_result);
 
  private:
-  std::vector<float *> gpu_buffers_;
 
-  cudaStream_t stream_;
-  std::map<std::string, int> in_out_size_;
-  std::map<std::string, std::vector<std::string>> binding_names_;
-  std::map<std::string, std::pair<int, size_t>> engine_name_size_;
+  std::atomic<bool> running_;
 
-  std::shared_ptr<IExecutionContext> execution_context_;
+  InfertMsg output_msg_;
 
-  std::shared_ptr<ParseMsgs> parsemsgs_;
+  AnchorPointsVector anchor_points_;
+
+  shared_ptr<NmsPlugin> nms_plugin_;
+
+  shared_ptr<ParseMsgs> parsemsgs_;
+
+  std::map<string, pair<int, int>> imgshape_;
+  std::vector<std::pair<int, int>> feat_sizes_;
 };
 
 }  // namespace appinfer
 }  // namespace hpc
 
-#endif  // APP_YOLO_TRT_INFER_H__
+#endif  // APP_YOLO_POSTDECODE_H__

@@ -162,7 +162,7 @@ bool InferenceEngine::Inference() {
     }
 
     // decode bbox
-    if (!decodeProcessor_->Inference(trtInfer_->cpu_buffers_[0], input_msg_, bboxQueue_)) {
+    if (!decodeProcessor_->Inference(trtInfer_->cpu_buffers_, input_msg_, bboxQueue_)) {
       GLOG_ERROR("Decode module error. ");
       return false;
     }

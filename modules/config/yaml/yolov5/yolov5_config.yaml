@@ -21,7 +21,10 @@ preprocessor_config:
   dst_img_channel: 3
 
 predict_config:
-  predict_dim: [1, 25200, 85]
+  decode_type: 1
+  branch_num: 1
+  predict_dim: [[1, 25200, 85]]
+  branchs_dim: [[1, 3, 80, 80],[1, 3, 40, 40],[1, 3, 20, 20]]
   max_objects: 0
   obj_threshold: 0.25
   nms_threshold: 0.5

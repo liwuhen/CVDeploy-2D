@@ -36,7 +36,7 @@
 #include "common.hpp"
 #include "dataset.h"
 #include "module.h"
-#include "nms.h"
+#include "postdecode.h"
 #include "parseconfig.h"
 #include "plugin.h"
 #include "std_buffer.h"
@@ -102,7 +102,8 @@ class DecodeProcessor : public InferModuleBase {
    * @param[in] [float*, InfertMsg&, std::shared_ptr<InferMsgQue>&].
    * @return    bool.
    */
-  bool Inference(float* predict, InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue);
+  bool Inference(std::vector<float*>& predict, InfertMsg& infer_msg,\
+     std::shared_ptr<InferMsgQue>& bboxQueue);
 
  private:
   /**
@@ -143,16 +144,16 @@ class DecodeProcessor : public InferModuleBase {
    * @param[in] [float*, vector<Box>&]．
    * @return    void.
    */
-  void CpuDecode(float* predict, InfertMsg& infer_msg, vector<Box>& box_result);
+  void CpuDecode(std::vector<float*>& predict, InfertMsg& infer_msg, vector<Box>& box_result);
 
  private:
   std::atomic<bool> running_;
 
   InfertMsg output_msg_;
 
-  shared_ptr<NmsPlugin> nms_plugin_;
-
   shared_ptr<ParseMsgs> parsemsgs_;
+
+  shared_ptr<ModelDecode> model_decode_;
 
   std::map<string, pair<int, int>> imgshape_;
 };
