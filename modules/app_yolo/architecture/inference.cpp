@@ -30,8 +30,8 @@ InferenceEngine::~InferenceEngine() {}
  * @description: init．
  */
 bool InferenceEngine::Init() {
-  this->trtInfer_ = std::make_shared<TrtInfer>();
-  preProcessor_ = std::make_shared<PreProcessor>();
+  this->trtInfer_  = std::make_shared<TrtInfer>();
+  preProcessor_    = std::make_shared<PreProcessor>();
   decodeProcessor_ = std::make_shared<DecodeProcessor>();
   trtInfer_->SetParam(parsemsgs_);
   preProcessor_->SetParam(parsemsgs_);
@@ -42,8 +42,8 @@ bool InferenceEngine::Init() {
 
   {
     this->output_img_device_ = nullptr;
-    inputMsgQue_ = std::make_shared<InputMsgQue>(500);
-    bboxQueue_ = std::make_shared<InferMsgQue>(500);
+    inputMsgQue_ = std::make_shared<InputMsgQue>(parsemsgs_->input_msgdepth_);
+    bboxQueue_   = std::make_shared<InferMsgQue>(parsemsgs_->decode_msgdepth_);
     checkRuntime(cudaMalloc(&output_img_device_, sizeof(float) * parsemsgs_->dstimg_size_));
   }
 
@@ -150,7 +150,7 @@ bool InferenceEngine::Inference() {
     GLOG_INFO("Process frame: " + std::to_string(input_msg_.frame_id));
 
     // preprocessor
-    if (!preProcessor_->Inference(input_msg_, output_img_device_, DeviceMode::GPU_MODE, nullptr)) {
+    if (!preProcessor_->Inference(input_msg_, output_img_device_, (DeviceMode)parsemsgs_->infer_mode_, nullptr)) {
       GLOG_ERROR("PreProcessor module error. ");
       return false;
     }

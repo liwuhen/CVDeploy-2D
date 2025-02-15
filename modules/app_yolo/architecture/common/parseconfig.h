@@ -71,19 +71,22 @@ class ParseMsgs {
   int model_acc_;        // Model quantisation accuracy
   int branch_num_;       // Model branch number
   int batchsizes_;       // Batch size
+  int infer_mode_;       // infer mode, 0-gpu, 1-cpu, 2-npu
   int decode_type_;      // Decode type
   int max_objects_;      // Maximum number of targets
+  int input_msgdepth_;   // Input msg queue length
+  int decode_msgdepth_;  // Decode msg queue length
   float obj_threshold_;  // Target Thresholds
   float nms_threshold_;  // Nms Target Thresholds
 
-  std::string img_path_;  // Offline original image path
-  std::string save_img_;  // Save result image paths offline
-  std::string yaml_path_;
-  std::string trt_path_;      // trt file path
-  std::string onnx_path_;     // onnx file path
-  std::string predict_path_;  // Predictions of onnx model python outputs
-  std::string log_path_;      // log file path
-  std::string imgs_path_;     // Offline test image collection path
+  std::string img_path_;     // Offline original image path
+  std::string save_img_;     // Save result image paths offline
+  std::string yaml_path_;    // Yaml path
+  std::string trt_path_;     // trt file path
+  std::string onnx_path_;    // onnx file path
+  std::string predict_path_; // Predictions of onnx model python outputs
+  std::string log_path_;     // log file path
+  std::string imgs_path_;    // Offline test image collection path
 
   std::vector<std::vector<int>> predict_dim_;  // Model prediction output dimensions
   std::vector<std::vector<int>> branchs_dim_;

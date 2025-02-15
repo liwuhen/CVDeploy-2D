@@ -4,6 +4,9 @@ common_config:
 
 inference_config:
   model_acc: 0
+  infer_mode: 0    # 0-gpu, 1-cpu, 2-npu
+  input_msgdepth: 500
+  decode_msgdepth: 500
   onnx_path: /config/model/yolov5s.onnx
   engine_path: /config/model/yolov5s_fp32.trt
   predict_path: /config/model/predict.data

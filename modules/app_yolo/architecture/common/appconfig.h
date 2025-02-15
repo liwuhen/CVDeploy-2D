@@ -74,6 +74,9 @@ class AppConfig {
   REG_YAML_VAR(int, decode_type_);
   REG_YAML_VAR(int, max_objects_);
   REG_YAML_VAR(int, model_acc_);
+  REG_YAML_VAR(int, infer_mode_);
+  REG_YAML_VAR(int, input_msgdepth_);
+  REG_YAML_VAR(int, decode_msgdepth_);
   REG_YAML_VAR(float, obj_threshold_);
   REG_YAML_VAR(float, nms_threshold_);
   REG_YAML_VAR(std::string, img_path_);
@@ -83,6 +86,7 @@ class AppConfig {
   REG_YAML_VAR(std::string, onnx_path_);
   REG_YAML_VAR(std::string, predict_path_);
   REG_YAML_VAR(std::string, log_path_);
+
 
   REG_YAML_VAR(std::vector<std::vector<int>>, predict_dim_);
   REG_YAML_VAR(std::vector<std::vector<int>>, branchs_dim_);
