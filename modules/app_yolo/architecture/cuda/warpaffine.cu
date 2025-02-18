@@ -32,12 +32,12 @@ static __global__ void warp_affine_bilinear_kernel(uint8_t* src, int batch, int 
                                                    uint8_t const_value_st, AppYolo app_mode) {
   int dx = blockDim.x * blockIdx.x + threadIdx.x;
   int dy = blockDim.y * blockIdx.y + threadIdx.y;
-  int k = blockDim.z * blockIdx.z + threadIdx.z;
+  int k  = blockDim.z * blockIdx.z + threadIdx.z;
 
   if (dx >= dst_width || dy >= dst_height || k >= batch) return;
 
   uint8_t* srcs = src + k * src_width * src_height * 3;
-  float* dsts = dst + k * dst_width * dst_height * 3;
+  float* dsts   = dst + k * dst_width * dst_height * 3;
 
   float src_x = 0;
   float src_y = 0;
@@ -83,14 +83,15 @@ static __global__ void warp_affine_bilinear_kernel(uint8_t* src, int batch, int 
     c2 = floorf(w1 * v1[2] + w2 * v2[2] + w3 * v3[2] + w4 * v4[2] + 0.5f);  // r
   }
 
+  int area = dst_width * dst_height;
+
   if (app_mode == AppYolo::YOLOV5_MODE) {
     // normalisation
     c0 = (c0 / 255.0f);
     c1 = (c1 / 255.0f);
     c2 = (c2 / 255.0f);
 
-    // bgr to rgb
-    int area = dst_width * dst_height;
+    // bgr to rgb && HWC to CHW
     float* pdst_b = dsts + area * 0 + dy * dst_width + dx;
     float* pdst_g = dsts + area * 1 + dy * dst_width + dx;
     float* pdst_r = dsts + area * 2 + dy * dst_width + dx;
@@ -98,7 +99,7 @@ static __global__ void warp_affine_bilinear_kernel(uint8_t* src, int batch, int 
     *pdst_g = c1;
     *pdst_b = c2;
   } else if (app_mode == AppYolo::YOLOX_MODE) {
-    int area = dst_width * dst_height;
+    // bgr to rgb && HWC to CHW
     float* pdst_b = dsts + area * 0 + dy * dst_width + dx;
     float* pdst_g = dsts + area * 1 + dy * dst_width + dx;
     float* pdst_r = dsts + area * 2 + dy * dst_width + dx;
