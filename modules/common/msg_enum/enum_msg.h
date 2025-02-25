@@ -28,6 +28,8 @@
 namespace hpc {
 namespace common {
 
+typedef enum class batch_mode_ : uint8_t { STATIC_MODE = 0, DYNAMIC_MODE } BatchMode;
+
 typedef enum class model_acc_ : uint8_t { MODEL_FLOAT32 = 0, MODEL_FLOAT16, MODEL_INT8 } ModelACC;
 
 typedef enum class device_mode_ : uint8_t { GPU_MODE = 0, CPU_MODE } DeviceMode;

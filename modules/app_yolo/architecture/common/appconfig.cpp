@@ -32,6 +32,7 @@ int AppConfig::model_acc_;
 int AppConfig::branch_num_;
 int AppConfig::batchsizes_;
 int AppConfig::infer_mode_;
+int AppConfig::batch_mode_;
 int AppConfig::decode_type_;
 int AppConfig::max_objects_;
 int AppConfig::input_msgdepth_;
@@ -105,6 +106,7 @@ AppConfig::AppConfig(const std::string& config_filename) : config_filename_(conf
   onnx_path_      = yaml_node_["inference_config"]["onnx_path"].as<std::string>();
   model_acc_      = yaml_node_["inference_config"]["model_acc"].as<int>();
   infer_mode_     = yaml_node_["inference_config"]["infer_mode"].as<int>();
+  batch_mode_     = yaml_node_["inference_config"]["batch_mode"].as<int>();
   input_msgdepth_ = yaml_node_["inference_config"]["input_msgdepth"].as<int>();
   decode_msgdepth_= yaml_node_["inference_config"]["decode_msgdepth"].as<int>();
   predict_path_   = yaml_node_["inference_config"]["predict_path"].as<std::string>();

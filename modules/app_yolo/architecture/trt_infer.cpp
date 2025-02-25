@@ -176,17 +176,22 @@ bool TrtInfer::BuildModel() {
   }
 
   GLOG_INFO("Build model acc[0-fp32, 1-fp16, 2-int8]:  " << parsemsgs_->model_acc_);
-  int maxBatchSize  = 10;
-  auto profile      = builder->createOptimizationProfile();
-  auto input_tensor = network->getInput(0);
-  auto input_dims   = input_tensor->getDimensions();
 
-  input_dims.d[0] = 1;
-  profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMIN, input_dims);
-  profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kOPT, input_dims);
-  input_dims.d[0] = maxBatchSize;
-  profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMAX, input_dims);
-  config->addOptimizationProfile(profile);
+  if ( (BatchMode)parsemsgs_->batch_mode_ == BatchMode::DYNAMIC_MODE ) {
+    int maxBatchSize  = 10;
+    auto profile      = builder->createOptimizationProfile();
+    auto input_tensor = network->getInput(0);
+    auto input_dims   = input_tensor->getDimensions();
+
+    input_dims.d[0] = 1;
+    profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMIN, input_dims);
+    profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kOPT, input_dims);
+    input_dims.d[0] = maxBatchSize;
+    profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMAX, input_dims);
+    config->addOptimizationProfile(profile);
+  }
+
+  GLOG_INFO("Infer batch mode: [0-static, 1-dynamic]:  " << parsemsgs_->batch_mode_);
 
   auto engine = make_nvshared(builder->buildEngineWithConfig(*network, *config));
   if (engine == nullptr) {

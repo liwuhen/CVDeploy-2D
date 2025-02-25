@@ -49,12 +49,12 @@ void TestDemo(InterfaceYolo* inference, std::string& path) {
   for (int index = 0; index < imgfilevec.size(); index++) {
     auto img = cv::imread(imgfilevec[index]);
     InfertMsg msg;
-    msg.width = img.cols;
-    msg.height = img.rows;
-    msg.img_size = img.cols * img.rows * 3;
-    msg.frame_id = index;
+    msg.width     = img.cols;
+    msg.height    = img.rows;
+    msg.img_size  = img.cols * img.rows * 3;
+    msg.frame_id  = index;
     msg.timestamp = GetSystmeTime();
-    msg.image = img.clone();
+    msg.image     = img.clone();
 
     inference->LoadData(msg);
   }

@@ -85,8 +85,8 @@ bool PreProcessor::DataResourceRelease() {}
  * @description: Inference.
  */
 bool PreProcessor::Inference(InfertMsg& input_msg,
-    float* dstimg, DeviceMode inferMode, cudaStream_t stream)
-{
+    float* dstimg, DeviceMode inferMode, cudaStream_t stream) {
+
   CalAffineMatrix(input_msg);
 
   switch (inferMode) {
@@ -110,11 +110,11 @@ bool PreProcessor::Inference(InfertMsg& input_msg,
 /**
  * @description: Gpu preprocessor.
  */
-bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg, float* dstimg, cudaStream_t stream)
-{
+bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg,
+    float* dstimg, cudaStream_t stream) {
+
   checkRuntime(cudaMemcpy(input_data_device_, input_msg.image.data,\
       input_msg.img_size * sizeof(uint8_t), cudaMemcpyHostToDevice));
-
   if (std::string(MODEL_FLAG) == "yolov5") {
     warp_affine_bilinear(input_data_device_, parsemsgs_->batchsizes_, input_msg, dstimg, \
         parsemsgs_->dst_img_w_, parsemsgs_->dst_img_h_, 114, nullptr, AppYolo::YOLOV5_MODE);
@@ -130,8 +130,8 @@ bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg, float* dstimg, cudaStre
  * @description: Cpu preprocessor.
  */
 bool PreProcessor::CpuPreprocessor(cv::Mat& srcimg, uint64_t timestamp,
-    float* input_device_gpu, cudaStream_t stream)
-{
+    float* input_device_gpu, cudaStream_t stream) {
+
   checkRuntime(cudaMallocHost(&input_data_host_, sizeof(float) * parsemsgs_->dstimg_size_));
 
   float scale_x = parsemsgs_->dst_img_w_ / static_cast<float>(parsemsgs_->src_img_w_);
@@ -183,8 +183,8 @@ void PreProcessor::CalAffineMatrix(InfertMsg& input_msg) {
 
   input_msg.affineMatrix(0, 0) = scale;
   input_msg.affineMatrix(1, 1) = scale;
-  input_msg.affineMatrix(0, 2) = (-scale * input_msg.width + parsemsgs_->dst_img_w_ + scale - 1) * 0.5;
-  input_msg.affineMatrix(1, 2) = (-scale * input_msg.height + parsemsgs_->dst_img_h_ + scale - 1) * 0.5;
+  input_msg.affineMatrix(0, 2) = 0;
+  input_msg.affineMatrix(1, 2) = 0;
 
   // Compute inverse
   input_msg.affineMatrix_inv = input_msg.affineMatrix.inverse();

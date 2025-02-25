@@ -75,6 +75,7 @@ class AppConfig {
   REG_YAML_VAR(int, max_objects_);
   REG_YAML_VAR(int, model_acc_);
   REG_YAML_VAR(int, infer_mode_);
+  REG_YAML_VAR(int, batch_mode_);
   REG_YAML_VAR(int, input_msgdepth_);
   REG_YAML_VAR(int, decode_msgdepth_);
   REG_YAML_VAR(float, obj_threshold_);

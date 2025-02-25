@@ -174,17 +174,15 @@ void ModelDecode::BboxDecodeInputLevel(std::vector<float*>& predict,
     InfertMsg& infer_msg, vector<Box>& box_result)
 {
   vector<Box> boxes;
-  int num_classes = parsemsgs_->predict_dim_[0][2] - 5;
+  int num_classes = parsemsgs_->predict_dim_[0][2] - 4;
   for (int i = 0; i < parsemsgs_->predict_dim_[0][1]; ++i)
   {
     float* pitem  = predict[0] + i * parsemsgs_->predict_dim_[0][2];
-    float objness = pitem[4];
-    if (objness < parsemsgs_->obj_threshold_) continue;
-    float* pclass = pitem + 5;
+    float* pclass = pitem + 4;
 
     int label  = std::max_element(pclass, pclass + num_classes) - pclass;
     float prob = pclass[label];
-    float confidence = prob * objness;
+    float confidence = prob;    // anchor free
     if (confidence < parsemsgs_->obj_threshold_) continue;
 
     float cx     = pitem[0];

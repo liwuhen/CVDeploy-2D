@@ -72,6 +72,7 @@ class ParseMsgs {
   int branch_num_;       // Model branch number
   int batchsizes_;       // Batch size
   int infer_mode_;       // infer mode, 0-gpu, 1-cpu, 2-npu
+  int batch_mode_;       // batch mode, 0-static batch, 1-dynamic batch
   int decode_type_;      // Decode type
   int max_objects_;      // Maximum number of targets
   int input_msgdepth_;   // Input msg queue length
