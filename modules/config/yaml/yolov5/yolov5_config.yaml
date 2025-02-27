@@ -1,15 +1,18 @@
 common_config:
   log_path: /workspace/log/
   imgs_path: /config/data/coco/
+  model_name: yolov5
+  quantize_flag: true   # begin PTQ
+  quantize_data: /home/selflearning/dataset/tinycoco/images/train2017
 
 inference_config:
-  model_acc: 0     # 0-fp32, 1-fp16, 2-int8
+  model_acc: 2     # 0-fp32, 1-fp16, 2-int8
   infer_mode: 0    # 0-gpu, 1-cpu, 2-npu
-  batch_mode: 0    # 0-static batch, 1-dynamic batch
+  batch_mode: 1    # 0-static batch, 1-dynamic batch
   input_msgdepth: 500
   decode_msgdepth: 500
   onnx_path: /config/model/yolov5su.onnx
-  engine_path: /config/model/yolov5su_fp32.trt
+  engine_path: /config/model/yolov5su_int8.trt
   predict_path: /config/model/predict.data
   offline_test:
     img_path: /config/data/coco/car.jpg
