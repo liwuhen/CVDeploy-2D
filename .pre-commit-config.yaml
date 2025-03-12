@@ -27,7 +27,7 @@ repos:
   hooks:
   - id: mypy
     args: []
-    exclude: ^(tests|docs)/
+    exclude: ^(test|docs)/
     additional_dependencies:
     - markdown-it-py
     - nox

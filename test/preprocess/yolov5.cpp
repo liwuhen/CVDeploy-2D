@@ -17,11 +17,13 @@
 */
 
 #include <iostream>
+#include <vector>
 #include <opencv2/opencv.hpp>
 
 #include "common/appconfig.h"
 #include "interface.h"
 #include "std_time.h"
+#include "voctojson.hpp"
 #include "task_struct.hpp"
 
 using namespace hpc::appinfer;
@@ -47,14 +49,18 @@ void TestDemo(InterfaceYolo* inference, std::string& path) {
   GetFileName(path, imgfilevec);
   sort(imgfilevec.begin(), imgfilevec.end());
   for (int index = 0; index < imgfilevec.size(); index++) {
-    auto img = cv::imread(imgfilevec[index]);
+    auto img       = cv::imread(imgfilevec[index]);
+    auto file_name = FileSystem::file_name(imgfilevec[index], false);
+    uint32_t img_id= atoi(file_name.c_str());
+
     InfertMsg msg;
-    msg.width     = img.cols;
-    msg.height    = img.rows;
-    msg.img_size  = img.cols * img.rows * 3;
-    msg.frame_id  = index;
-    msg.timestamp = GetSystmeTime();
-    msg.image     = img.clone();
+    msg.width      = img.cols;
+    msg.height     = img.rows;
+    msg.img_size   = img.cols * img.rows * 3;
+    msg.frame_id   = img_id;
+    msg.timestamp  = GetSystmeTime();
+    msg.index      = index;
+    msg.image      = img.clone();
 
     inference->LoadData(msg);
   }
@@ -73,9 +79,18 @@ int main(int argc, char* argv[]) {
   inference->Init();
   inference->Start();
 
-  auto filesPath = path + "/config/data/coco/val2017";
+  // auto filesPath = path + "/config/data/coco/val2017";
+  // std::string filesPath = "/home/selflearning/dataset/tinycoco/images/val2017";
+  std::string filesPath = "/home/selflearning/dataset/VOC/images/val";
   TestDemo(inference.get(), filesPath);
 
   inference->Stop();
+
+  // save model result to json
+  std::vector<InfertMsg> infer_msg_vec;
+  inference->Callback(infer_msg_vec);
+  voc_save_to_json(path + "/workspace/model_prediction.json", infer_msg_vec);
+
+  inference->Release();
   return 0;
 }

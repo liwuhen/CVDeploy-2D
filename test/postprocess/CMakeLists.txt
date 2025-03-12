@@ -5,6 +5,10 @@ include_directories(
   ${CMAKE_PATH}/modules/app_yolo
   ${CMAKE_PATH}/modules/app_yolo/appinterface
   ${CMAKE_PATH}/modules/app_yolo/architecture
+  ${CMAKE_PATH}/modules/benchmark
+  ${CMAKE_PATH}/modules/benchmark/voc
+  ${CMAKE_PATH}/modules/benchmark/coco
+  ${CMAKE_PATH}/modules/common/json
   ${CMAKE_PATH}/modules/common/utils
   ${CMAKE_PATH}/modules/common/logging
   ${CMAKE_PATH}/modules/common/msg_struct)
