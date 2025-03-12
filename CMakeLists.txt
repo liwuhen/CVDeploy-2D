@@ -6,7 +6,7 @@ set(MODEL_FLAG
     CACHE STRING "Model configuration flag")
 
 add_definitions("-Wall -g")
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_PATH ${CMAKE_CURRENT_LIST_DIR})
 
@@ -29,4 +29,4 @@ include_directories(
   ${CMAKE_CURRENT_LIST_DIR}/modules/common/msg_struct)
 
 add_subdirectory(modules/app_yolo)
-add_subdirectory(test/${MODEL_FLAG})
+add_subdirectory(runapp/${MODEL_FLAG})
