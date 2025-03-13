@@ -2,6 +2,7 @@ import os
 import cv2
 import json
 import logging
+import argparse
 import numpy as np
 import os.path as osp
 from tqdm import tqdm
@@ -111,9 +112,11 @@ def get_img_info(data_path, label_path):
 
     return img_info
 
-def generate_coco_format_labels(img_info, class_names, save_path, task_shape=(640, 640)):
+def generate_coco_format_labels(img_info,
+        class_names, save_path, data_type, task_shape=(640, 640)):
 
-    # coco80 = coco80_to_coco91_class()
+    if data_type == "coco" :
+        coco80 = coco80_to_coco91_class()
 
     # for evaluation with pycocotools
     dataset = {"categories": [], "annotations": [], "images": []}
@@ -148,7 +151,11 @@ def generate_coco_format_labels(img_info, class_names, save_path, task_shape=(64
                 y2 = (y + h / 2) * img_h
 
                 # cls_id starts from 0
-                cls_id = int(c)
+                if data_type == "coco" :
+                    cls_id = coco80[int(c)]
+                elif data_type == "voc" :
+                    cls_id = int(c)
+
                 new_w = max(0, x2 - x1)
                 new_h = max(0, y2 - y1)
 
@@ -174,10 +181,16 @@ def generate_coco_format_labels(img_info, class_names, save_path, task_shape=(64
 
 if __name__ == "__main__":
 
-    # Define the paths
-    data_path  = "/home/selflearning/dataset/VOC/images/val"
-    label_path = "/home/selflearning/dataset/VOC/labels/val"
-    save_path  = "/home/selflearning/opensource/HPC_Deploy/install_nvidia/yolov5_bin/x86/workspace/gt_val.json"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_type', type=str, help="coco, voc")
+    parser.add_argument('--data_path', type=str, help="image data path")
+    parser.add_argument('--label_path',type=str, help="label data path")
+    parser.add_argument('--save_path', type=str, help="save result path")
+    args = parser.parse_args()
 
-    img_info = get_img_info(data_path, label_path)
-    generate_coco_format_labels(img_info, voc_class_names, save_path)
+    img_info = get_img_info(args.data_path, args.label_path)
+
+    if args.data_type == "coco":
+        generate_coco_format_labels(img_info, coco_class_names, args.save_path, args.data_type)
+    elif args.data_type == "voc":
+        generate_coco_format_labels(img_info, voc_class_names, args.save_path, args.data_type)
