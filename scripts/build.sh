@@ -88,16 +88,16 @@ if [ "${PACK_FLAG}" == "ON" ] ; then
     if [ "${PC_X86_FLAG}" == "ON" ]; then
         rm -rf "${INSTALL_PATH}"/x86
         mv "${HOME_DIR}"/modules/"${LIB_PATH}"/"${MODEL_FLAG}"_bin/x86 "${INSTALL_PATH}"
-        mv "${HOME_DIR}"/test/"${APP_PATH}"/"${MODEL_FLAG}"_bin/x86/*  "${INSTALL_PATH}"/x86
+        mv "${HOME_DIR}"/runapp/"${APP_PATH}"/"${MODEL_FLAG}"_bin/x86/*  "${INSTALL_PATH}"/x86
 
     elif [ "${CROSS_COMPILE}" == "ON" ] ; then
         rm -rf "${INSTALL_PATH}"/arm
         mv "${HOME_DIR}"/modules/"${LIB_PATH}"/"${MODEL_FLAG}"_bin/arm "${INSTALL_PATH}"
-        mv "${HOME_DIR}"/test/"${APP_PATH}"/"${MODEL_FLAG}"_bin/arm/*  "${INSTALL_PATH}"/arm
+        mv "${HOME_DIR}"/runapp/"${APP_PATH}"/"${MODEL_FLAG}"_bin/arm/*  "${INSTALL_PATH}"/arm
     fi
 
     rm -rf "${HOME_DIR}"/modules/"${LIB_PATH}"/"${MODEL_FLAG}"_bin
-    rm -rf "${HOME_DIR}"/test/"${APP_PATH}"/"${MODEL_FLAG}"_bin
+    rm -rf "${HOME_DIR}"/runapp/"${APP_PATH}"/"${MODEL_FLAG}"_bin
 
     cp -r "${HOME_DIR}"/scripts/run.sh "${HOME_DIR}"/install_"${PLATFORM_FLAG,,}"
     echo -e "\e[1m\e[34m[Bash-Pack-${TIME}]: copy ${COMPILER_FLAG} ${MODEL_FLAG} bin to install  \e[0m"
