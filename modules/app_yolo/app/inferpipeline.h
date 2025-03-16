@@ -90,6 +90,13 @@ class InferPipeline {
    */
   bool LoadData(InfertMsg& infer_msg);
 
+  /**
+   * @brief     Load data.
+   * @param[in] vector<InfertMsg>&.
+   * @return    bool.
+   */
+  bool TriggerCallback(vector<InfertMsg>& infer_msg_vec);
+
  private:
   /**
    * @brief     Module monitoring.

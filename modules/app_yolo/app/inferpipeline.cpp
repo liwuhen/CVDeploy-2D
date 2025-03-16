@@ -124,6 +124,16 @@ bool InferPipeline::LoadData(InfertMsg& infer_msg) {
   return true;
 }
 
+bool InferPipeline::TriggerCallback(vector<InfertMsg>& infer_msg_vec) {
+  if (moduleMap_.find(ModuleType::MODULE_INFERENCE) != moduleMap_.end()) {
+    auto inference = dynamic_cast<InferenceEngine*>(moduleMap_[ModuleType::MODULE_INFERENCE].get());
+    inference->TriggerCallback(infer_msg_vec);
+  } else {
+    GLOG_ERROR("Inference module does not exit!");
+  }
+  return true;
+}
+
 /**
  * @description: Module monitoring.
  */
