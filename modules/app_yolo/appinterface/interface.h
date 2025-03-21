@@ -66,7 +66,7 @@ class InterfaceYolo {
   bool Stop();
 
   /**
-   * @brief     Software function stops．
+   * @brief     Software function stops,Release Resources．
    * @param[in] void．
    * @return    bool.
    */
@@ -79,6 +79,12 @@ class InterfaceYolo {
    */
   template <typename T>
   bool LoadData(T& class_t);
+
+  /**
+   * @brief Callback infer result．
+   */
+  template <typename T>
+  bool Callback(T& data);
 
   /**
    * @brief     Init config.

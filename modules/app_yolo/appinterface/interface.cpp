@@ -76,6 +76,16 @@ class InterfaceYolo::InferInterFace {
     return inferpipeline_->LoadData(class_t);
   }
 
+  /**
+   * @brief     Load data.
+   * @param[in] template <typename T>&.
+   * @return    bool.
+   */
+  template <typename T>
+  bool Callback(T& data) {
+    return inferpipeline_->TriggerCallback(data);
+  }
+
  private:
   std::shared_ptr<InferPipeline> inferpipeline_;
 };
@@ -99,12 +109,12 @@ bool InterfaceYolo::Start() { return infer_->Start(); }
 bool InterfaceYolo::Stop() { return infer_->Stop(); }
 
 /**
- * @brief Thread stop．
+ * @brief Software function stops,Release Resources．
  */
 bool InterfaceYolo::Release() { return infer_->Release(); }
 
 /**
- * @brief Software function stops．
+ * @brief Load Data．
  */
 template <typename T>
 bool InterfaceYolo::LoadData(T& class_t) {
@@ -112,6 +122,16 @@ bool InterfaceYolo::LoadData(T& class_t) {
 }
 
 template bool InterfaceYolo::LoadData(InfertMsg& infer_msg);
+
+/**
+ * @brief Callback infer result．
+ */
+template <typename T>
+bool InterfaceYolo::Callback(T& data) {
+  return infer_->Callback(data);
+}
+
+template bool InterfaceYolo::Callback(vector<InfertMsg>& infer_msg_vec);
 
 /**
  * @brief Init config．
