@@ -60,6 +60,7 @@ class ParseMsgs {
 
  public:
   bool is_init_;
+  bool quantize_flag_;   // Quantize flag
   int src_img_w_;        // Raw image width
   int src_img_h_;        // Raw image height
   int src_img_c_;        // Raw image channel
@@ -71,23 +72,32 @@ class ParseMsgs {
   int model_acc_;        // Model quantisation accuracy
   int branch_num_;       // Model branch number
   int batchsizes_;       // Batch size
-  int infer_mode_;       // infer mode, 0-gpu, 1-cpu, 2-npu
-  int batch_mode_;       // batch mode, 0-static batch, 1-dynamic batch
+  int infer_mode_;       // Infer mode, 0-gpu, 1-cpu, 2-npu
+  int batch_mode_;       // Batch mode, 0-static batch, 1-dynamic batch
   int decode_type_;      // Decode type
   int max_objects_;      // Maximum number of targets
+  int max_batchsize_;    // Max batch size
+  int calib_batchsize_;  // Calibrator batch size;
   int input_msgdepth_;   // Input msg queue length
   int decode_msgdepth_;  // Decode msg queue length
   float obj_threshold_;  // Target Thresholds
   float nms_threshold_;  // Nms Target Thresholds
 
-  std::string img_path_;     // Offline original image path
-  std::string save_img_;     // Save result image paths offline
-  std::string yaml_path_;    // Yaml path
-  std::string trt_path_;     // trt file path
-  std::string onnx_path_;    // onnx file path
-  std::string predict_path_; // Predictions of onnx model python outputs
-  std::string log_path_;     // log file path
-  std::string imgs_path_;    // Offline test image collection path
+  std::string nms_type_;        // Nms
+  std::string model_name_;      // Model name
+  std::string img_path_;        // Offline original image path
+  std::string save_img_;        // Save result image paths offline
+  std::string yaml_path_;       // Yaml path
+  std::string trt_path_;        // trt file path
+  std::string onnx_path_;       // Onnx file path
+  std::string predict_path_;    // Predictions of onnx model python outputs
+  std::string log_path_;        // Log file path
+  std::string quantize_data_;   // Quantize data path
+  std::string preprocess_type_; // Preprocess type
+  std::string postprocess_type_;// Postprocess type
+
+  std::string calib_table_path_;      // Calib table path
+  std::string calib_preprocess_type_; // Calib preprocess type
 
   std::vector<std::vector<int>> predict_dim_;  // Model prediction output dimensions
   std::vector<std::vector<int>> branchs_dim_;

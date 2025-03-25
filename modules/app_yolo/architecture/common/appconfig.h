@@ -61,8 +61,8 @@ class AppConfig {
   static YAML::Node yaml_node_;
 
   REG_CUS_VAR(home_path_);
-
   REG_YAML_VAR(bool, is_init_);
+  REG_YAML_VAR(bool, quantize_flag_);
   REG_YAML_VAR(int, src_img_w_);
   REG_YAML_VAR(int, src_img_h_);
   REG_YAML_VAR(int, src_img_c_);
@@ -76,10 +76,13 @@ class AppConfig {
   REG_YAML_VAR(int, model_acc_);
   REG_YAML_VAR(int, infer_mode_);
   REG_YAML_VAR(int, batch_mode_);
+  REG_YAML_VAR(int, max_batchsize_);
+  REG_YAML_VAR(int, calib_batchsize_);
   REG_YAML_VAR(int, input_msgdepth_);
   REG_YAML_VAR(int, decode_msgdepth_);
   REG_YAML_VAR(float, obj_threshold_);
   REG_YAML_VAR(float, nms_threshold_);
+  REG_YAML_VAR(std::string, nms_type_);
   REG_YAML_VAR(std::string, img_path_);
   REG_YAML_VAR(std::string, save_img_);
   REG_YAML_VAR(std::string, yaml_path_);
@@ -87,6 +90,12 @@ class AppConfig {
   REG_YAML_VAR(std::string, onnx_path_);
   REG_YAML_VAR(std::string, predict_path_);
   REG_YAML_VAR(std::string, log_path_);
+  REG_YAML_VAR(std::string, model_name_);
+  REG_YAML_VAR(std::string, quantize_data_);
+  REG_YAML_VAR(std::string, preprocess_type_);
+  REG_YAML_VAR(std::string, postprocess_type_);
+  REG_YAML_VAR(std::string, calib_table_path_);
+  REG_YAML_VAR(std::string, calib_preprocess_type_);
 
 
   REG_YAML_VAR(std::vector<std::vector<int>>, predict_dim_);
@@ -103,8 +112,6 @@ class AppConfig {
   static AppConfig* getInstance();
   static void initConfig(std::string& filename);
   static YAML::Node& getYamlNode();
-
-  REG_YAML_PUBLIC_VAR(std::string, imgs_path_);
 };
 
 inline bool InitAppConfig(std::string& homepath, std::string& filepath) {
