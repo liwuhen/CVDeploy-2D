@@ -74,14 +74,14 @@ int main(int argc, char* argv[]) {
     path = path.substr(0, pos);
   }
 
-  std::string file_path_ = path + "/config/yaml/" + "yolov5_anchorfree_config.yaml";
+  std::string file_path_ = path + "/config/yaml/" + "yolov5_anchorbase_config.yaml";
   std::shared_ptr<InterfaceYolo> inference = InterfaceYolo::getInstance();
   inference->InitConfig(path, file_path_);
   inference->Init();
   inference->Start();
 
-  std::string filesPath = "/home/selflearning/dataset/tinycoco/images/val2017";
-  // std::string filesPath = "/home/selflearning/dataset/VOC/images/val";
+  // std::string filesPath = "/home/selflearning/dataset/tinycoco/images/val2017";
+  std::string filesPath = "/home/selflearning/dataset/VOC/images/val";
   TestDemo(inference.get(), filesPath);
 
   inference->Stop();
@@ -89,8 +89,8 @@ int main(int argc, char* argv[]) {
   // save model result to json
   std::vector<InfertMsg> infer_msg_vec;
   inference->Callback(infer_msg_vec);
-  // voc_save_to_json(path + "/workspace/model_prediction.json", infer_msg_vec);
-  coco_save_to_json(path + "/workspace/model_prediction.json", infer_msg_vec);
+  // coco_save_to_json(path + "/workspace/model_prediction.json", infer_msg_vec);
+  voc_save_to_json(path + "/workspace/model_prediction.json", infer_msg_vec);
 
   inference->Release();
   return 0;
