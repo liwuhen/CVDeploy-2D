@@ -1,0 +1,2 @@
+common_config:
+  model_config: /config/yaml/yolov5_anchorfree_config.yaml
