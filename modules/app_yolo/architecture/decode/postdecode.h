@@ -33,7 +33,6 @@
 #include <tuple>
 #include <vector>
 
-#include "nms.h"
 #include "common.hpp"
 #include "dataset.h"
 #include "module.h"
@@ -142,7 +141,7 @@ class ModelDecode : public DecodeModuleBase {
 
   AnchorPointsVector anchor_points_;
 
-  shared_ptr<NmsPlugin> nms_plugin_;
+  // shared_ptr<NmsPlugin> nms_plugin_;
 
   shared_ptr<ParseMsgs> parsemsgs_;
 

@@ -43,6 +43,7 @@
 #include "task_struct.hpp"
 #include "utils.hpp"
 #include "warpaffine.hpp"
+#include "preprocess_registry.hpp"
 
 /**
  * @namespace hpc::appinfer
@@ -140,15 +141,23 @@ class PreProcessor : public InferModuleBase {
    * @param[in] [InfertMsg&, int, float *, cudaStream_t].
    * @return    bool.
    */
-  bool GpuPreprocessor(InfertMsg& input_msg, float* dstimg, cudaStream_t stream);
+  bool GpuPreprocessor(InfertMsg& input_msg,
+      float* dstimg, cudaStream_t stream);
 
   /**
    * @brief     Cpu preprocessor.
    * @param[in] [cv::Mat&, float *, cudaStream_t].
    * @return    bool.
    */
-  bool CpuPreprocessor(cv::Mat& srcimg, uint64_t timestamp, float* input_device_gpu,
-                       cudaStream_t stream);
+  bool CpuPreprocessor(InfertMsg& input_msg,
+      float* dstimg, cudaStream_t stream);
+
+  /**
+   * @brief     Load file.
+   * @param[in] [const string&].
+   * @return    bool.
+   */
+  std::vector<uint8_t>LoadFile(const string& file);
 
  private:
   float* input_data_host_;

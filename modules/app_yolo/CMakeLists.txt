@@ -28,6 +28,11 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/architecture/common
   ${PROJECT_SOURCE_DIR}/architecture/decode
   ${PROJECT_SOURCE_DIR}/architecture/module
+  ${PROJECT_SOURCE_DIR}/architecture/quantize
+  ${PROJECT_SOURCE_DIR}/architecture/template
+  ${PROJECT_SOURCE_DIR}/architecture/preprocess
+  ${CMAKE_PATH}/modules/benchmark
+  ${CMAKE_PATH}/modules/common/json
   ${CMAKE_PATH}/modules/common/utils
   ${CMAKE_PATH}/modules/common/logging
   ${CMAKE_PATH}/modules/common/msg_img
@@ -52,7 +57,9 @@ file(
   ${PROJECT_SOURCE_DIR}/architecture/cuda/*.cpp
   ${PROJECT_SOURCE_DIR}/architecture/common/*.cpp
   ${PROJECT_SOURCE_DIR}/architecture/decode/*.cpp
-  ${CMAKE_PATH}/modules/common/logging/*.cpp)
+  ${PROJECT_SOURCE_DIR}/architecture/template/*.cc
+  ${CMAKE_PATH}/modules/common/logging/*.cpp
+  ${CMAKE_PATH}/modules/common/json/*.cpp)
 
 cuda_add_library(${MODEL_FLAG}_gpu_proprecessor SHARED
                  ${PROJECT_SOURCE_DIR}/architecture/cuda/warpaffine.cu)

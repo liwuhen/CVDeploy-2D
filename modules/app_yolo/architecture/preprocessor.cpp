@@ -96,7 +96,7 @@ bool PreProcessor::Inference(InfertMsg& input_msg,
       }
       break;
     case DeviceMode::CPU_MODE:
-      if (!CpuPreprocessor(input_msg.image, input_msg.timestamp, dstimg, stream)) {
+      if (!CpuPreprocessor(input_msg, dstimg, stream)) {
         return false;
       }
       break;
@@ -115,13 +115,11 @@ bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg,
 
   checkRuntime(cudaMemcpy(input_data_device_, input_msg.image.data,\
       input_msg.img_size * sizeof(uint8_t), cudaMemcpyHostToDevice));
-  if (std::string(MODEL_FLAG) == "yolov5") {
-    warp_affine_bilinear(input_data_device_, parsemsgs_->batchsizes_, input_msg, dstimg, \
-        parsemsgs_->dst_img_w_, parsemsgs_->dst_img_h_, 114, nullptr, AppYolo::YOLOV5_MODE);
-  } else if (std::string(MODEL_FLAG) == "yolox") {
-    warp_affine_bilinear(input_data_device_, parsemsgs_->batchsizes_, input_msg, dstimg, \
-        parsemsgs_->dst_img_w_, parsemsgs_->dst_img_h_, 114, nullptr, AppYolo::YOLOX_MODE);
-  }
+
+  auto preprocess = Registry::getInstance()->getRegisterFunc<InfertMsg&, float*,
+                    uint8_t*, std::shared_ptr<ParseMsgs>&>(parsemsgs_->preprocess_type_);
+
+  preprocess(input_msg, dstimg, input_data_device_, parsemsgs_);
 
   return true;
 }
@@ -129,46 +127,16 @@ bool PreProcessor::GpuPreprocessor(InfertMsg& input_msg,
 /**
  * @description: Cpu preprocessor.
  */
-bool PreProcessor::CpuPreprocessor(cv::Mat& srcimg, uint64_t timestamp,
-    float* input_device_gpu, cudaStream_t stream) {
+bool PreProcessor::CpuPreprocessor(InfertMsg& input_msg,
+    float* dstimg, cudaStream_t stream) {
 
-  checkRuntime(cudaMallocHost(&input_data_host_, sizeof(float) * parsemsgs_->dstimg_size_));
+  auto preprocess = Registry::getInstance()->getRegisterFunc<InfertMsg&, float*,
+                    std::shared_ptr<ParseMsgs>&>(parsemsgs_->preprocess_type_);
 
-  float scale_x = parsemsgs_->dst_img_w_ / static_cast<float>(parsemsgs_->src_img_w_);
-  float scale_y = parsemsgs_->dst_img_h_ / static_cast<float>(parsemsgs_->src_img_h_);
-  float scale   = std::min(scale_x, scale_y);
-  float i2d[6];
-  // resize 图像，源图像和目标图像几何中心的对齐
-  i2d[0] = scale;
-  i2d[1] = 0;
-  i2d[2] = (-scale * parsemsgs_->src_img_w_ + parsemsgs_->dst_img_w_ + scale - 1) * 0.5;
-  i2d[3] = 0;
-  i2d[4] = scale;
-  i2d[5] = (-scale * parsemsgs_->src_img_h_ + parsemsgs_->dst_img_h_ + scale - 1) * 0.5;
+  preprocess(input_msg, input_data_host_, parsemsgs_);
 
-  cv::Mat m2x3_i2d(2, 3, CV_32F, i2d);            // image to dst(network), 2x3 matrix
-
-  cv::Mat input_image(parsemsgs_->dst_img_h_, parsemsgs_->dst_img_w_, CV_8UC3);
-  // 对图像做平移缩放旋转变换，可逆
-  cv::warpAffine(srcimg, input_image, m2x3_i2d, input_image.size(), \
-      cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar::all(114));
-  std::string path = parsemsgs_->save_img_ + "/img_cpu_test_" + std::to_string(timestamp) + ".jpg";
-  cv::imwrite(path, input_image);
-
-  int image_area = input_image.cols * input_image.rows;
-  unsigned char* pimage = input_image.data;
-  float* phost_b = input_data_host_ + image_area * 0;
-  float* phost_g = input_data_host_ + image_area * 1;
-  float* phost_r = input_data_host_ + image_area * 2;
-  for (int i = 0; i < image_area; ++i, pimage += 3) {
-    // 注意这里的顺序 rgb 调换了
-    *phost_r++ = pimage[0] / 255.0f;
-    *phost_g++ = pimage[1] / 255.0f;
-    *phost_b++ = pimage[2] / 255.0f;
-  }
-
-  checkRuntime(cudaMemcpyAsync(input_device_gpu, input_data_host_, \
-      sizeof(float) * parsemsgs_->dstimg_size_, cudaMemcpyHostToDevice, stream));
+  checkRuntime(cudaMemcpy(dstimg, input_data_host_, \
+      sizeof(float) * parsemsgs_->dstimg_size_, cudaMemcpyHostToDevice));
 
   return true;
 }
@@ -183,8 +151,14 @@ void PreProcessor::CalAffineMatrix(InfertMsg& input_msg) {
 
   input_msg.affineMatrix(0, 0) = scale;
   input_msg.affineMatrix(1, 1) = scale;
-  input_msg.affineMatrix(0, 2) = 0;
-  input_msg.affineMatrix(1, 2) = 0;
+  input_msg.affineMatrix(0, 2) = -scale * input_msg.width  * 0.5 + parsemsgs_->dst_img_w_ * 0.5 + scale * 0.5 - 0.5;
+  input_msg.affineMatrix(1, 2) = -scale * input_msg.height * 0.5 + parsemsgs_->dst_img_h_ * 0.5 + scale * 0.5 - 0.5;
+
+  input_msg.affineMatrix_cv = \
+      (cv::Mat_<float>(2, 3) << scale, 0.0,
+      -scale * input_msg.width  * 0.5 + parsemsgs_->dst_img_w_ * 0.5 + scale * 0.5 - 0.5,
+                                 0.0, scale,
+      -scale * input_msg.height * 0.5 + parsemsgs_->dst_img_h_ * 0.5 + scale * 0.5 - 0.5);
 
   // Compute inverse
   input_msg.affineMatrix_inv = input_msg.affineMatrix.inverse();
@@ -195,7 +169,7 @@ void PreProcessor::CalAffineMatrix(InfertMsg& input_msg) {
  */
 bool PreProcessor::MemAllocator() {
   checkRuntime(cudaMalloc(&input_data_device_, parsemsgs_->srcimg_size_));
-
+  checkRuntime(cudaMallocHost(&input_data_host_, sizeof(float) * parsemsgs_->dstimg_size_));
   return true;
 }
 
@@ -204,8 +178,28 @@ bool PreProcessor::MemAllocator() {
  */
 bool PreProcessor::MemFree() {
   checkRuntime(cudaFree(input_data_device_));
-
+  checkRuntime(cudaFreeHost(input_data_host_));
   return true;
+}
+
+/**
+ * @description: Load file.
+ */
+std::vector<uint8_t> PreProcessor::LoadFile(const string& file) {
+  ifstream in(file, ios::in | ios::binary);
+  if (!in.is_open()) return {};
+
+  in.seekg(0, ios::end);
+  size_t length = in.tellg();
+  vector<uint8_t> data;
+  if (length > 0) {
+    in.seekg(0, ios::beg);
+    data.resize(length);
+
+    in.read(reinterpret_cast<char*>(&data[0]), length);
+  }
+  in.close();
+  return data;
 }
 
 }  // namespace appinfer

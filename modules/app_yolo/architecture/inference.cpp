@@ -57,9 +57,9 @@ bool InferenceEngine::Init() {
 bool InferenceEngine::RunStart() {
   running_.store(true);
 
-  inputMsgQue_->Clear();
-
+  callbackMsg.clear();
   bboxQueue_->Clear();
+  inputMsgQue_->Clear();
 
   worker_ptr_ = std::make_shared<std::thread>([this]() { Inference(); });
 
@@ -78,8 +78,6 @@ bool InferenceEngine::RunStop() {
   if (worker_ptr_->joinable()) {
     worker_ptr_->join();
   }
-
-  DataResourceRelease();
 
   GLOG_INFO("[RunStop]: Inference module stop");
   return true;
@@ -116,6 +114,7 @@ bool InferenceEngine::SetParam(shared_ptr<ParseMsgs>& parse_msgs) {
  * @description: Module resource release.
  */
 bool InferenceEngine::DataResourceRelease() {
+  callbackMsg.clear();
   inputMsgQue_->Clear();
 
   if (!preProcessor_->MemFree()) return false;
@@ -147,27 +146,45 @@ bool InferenceEngine::Inference() {
       continue;
     }
 
-    GLOG_INFO("Process frame: " + std::to_string(input_msg_.frame_id));
+    GLOG_INFO("[CV-Deploy]: Process frame: " + std::to_string(input_msg_.index));
 
     // preprocessor
-    if (!preProcessor_->Inference(input_msg_, output_img_device_, (DeviceMode)parsemsgs_->infer_mode_, nullptr)) {
+    auto start_timer = timestamp_now_float();
+    auto begin_timer = timestamp_now_float();
+    if (!preProcessor_->Inference(input_msg_, output_img_device_, \
+        (DeviceMode)parsemsgs_->infer_mode_, nullptr)) {
       GLOG_ERROR("PreProcessor module error. ");
       return false;
     }
+    preproccess_time_.push_back(timestamp_now_float() - begin_timer);
 
     // inference
+    begin_timer = timestamp_now_float();
     if (!trtInfer_->Inference(output_img_device_)) {
       GLOG_ERROR("TRT inference error. ");
       return false;
     }
+    infer_time_.push_back(timestamp_now_float() - begin_timer);
 
     // decode bbox
-    if (!decodeProcessor_->Inference(trtInfer_->cpu_buffers_, input_msg_, bboxQueue_)) {
+    begin_timer = timestamp_now_float();
+    if (!decodeProcessor_->Inference(trtInfer_->cpu_buffers_, \
+        input_msg_, callbackMsg, bboxQueue_)) {
       GLOG_ERROR("Decode module error. ");
       return false;
     }
+    decode_time_.push_back(timestamp_now_float() - begin_timer);
+    endtoend_time_.push_back(timestamp_now_float() - start_timer);
   }
 
+  // time info
+  {
+    // FPS && Times
+    auto averageTimeVec = GetAverageTime(preproccess_time_, infer_time_, decode_time_, endtoend_time_);
+    auto average_fps    = input_msg_.index / (averageTimeVec[4] / 1000.0);
+    GLOG_INFO("Average preProcessor ms: "<< averageTimeVec[0] << " inference ms: "<< averageTimeVec[1] \
+      << "\n decode ms: "<<averageTimeVec[2]<<" end to end ms: "<<averageTimeVec[3]<< " fps: "<<average_fps);
+  }
   running_.store(false);
 
   return true;
@@ -195,6 +212,12 @@ bool InferenceEngine::InferenceV1() {
   // bboxQueue_->Push(msg);
 
   return true;
+}
+
+void InferenceEngine::TriggerCallback(vector<InfertMsg>& infer_msg_vec) {
+  if ( !running_ ) {
+    infer_msg_vec.insert(infer_msg_vec.end(), callbackMsg.begin(), callbackMsg.end());
+  }
 }
 
 }  // namespace appinfer

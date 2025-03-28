@@ -7,9 +7,9 @@ namespace appinfer {
  * @description: init．
  */
 bool ModelDecode::Init() {
-  nms_plugin_ = std::make_shared<NmsPlugin>();
-  nms_plugin_->SetParam(parsemsgs_);
-  nms_plugin_->Init();
+  // nms_plugin_ = std::make_shared<NmsPlugin>();
+  // nms_plugin_->SetParam(parsemsgs_);
+  // nms_plugin_->Init();
 
   feat_sizes_ = {{64, 120}, {32, 60}, {16, 30}};
 
@@ -164,25 +164,28 @@ void ModelDecode::BboxDecodeFeatureLevel(std::vector<float*>& predict,
     float image_bottom = infer_msg.affineMatrix_inv(1, 1) * bottom + infer_msg.affineMatrix_inv(1, 2);
     boxes.emplace_back(image_left, image_top, image_right, image_bottom, confidence, label);
   }
-  nms_plugin_->Nms(boxes, box_result, parsemsgs_->nms_threshold_);
+  // nms_plugin_->Nms(boxes, box_result, parsemsgs_->nms_threshold_);
 }
 
 /**
  * @description: Bounding box decoding at input level．
  */
 void ModelDecode::BboxDecodeInputLevel(std::vector<float*>& predict,
-    InfertMsg& infer_msg, vector<Box>& box_result)
-{
+    InfertMsg& infer_msg, vector<Box>& box_result) {
+
   vector<Box> boxes;
-  int num_classes = parsemsgs_->predict_dim_[0][2] - 4;
+  int num_classes = parsemsgs_->predict_dim_[0][2] - 5;
   for (int i = 0; i < parsemsgs_->predict_dim_[0][1]; ++i)
   {
     float* pitem  = predict[0] + i * parsemsgs_->predict_dim_[0][2];
-    float* pclass = pitem + 4;
+    float* pclass = pitem + 5;
+
+    float objitem = pitem[4];
+    if ( objitem < parsemsgs_->obj_threshold_ ) continue;
 
     int label  = std::max_element(pclass, pclass + num_classes) - pclass;
     float prob = pclass[label];
-    float confidence = prob;    // anchor free
+    float confidence = prob * objitem;    // anchor free
     if (confidence < parsemsgs_->obj_threshold_) continue;
 
     float cx     = pitem[0];
@@ -195,14 +198,23 @@ void ModelDecode::BboxDecodeInputLevel(std::vector<float*>& predict,
     float bottom = cy + height * 0.5;
 
     // 输入图像层级模型预测框 ==> 映射回原图上尺寸
-    float image_left   = infer_msg.affineMatrix_inv(0, 0) * left   + infer_msg.affineMatrix_inv(0, 2);
-    float image_top    = infer_msg.affineMatrix_inv(1, 1) * top    + infer_msg.affineMatrix_inv(1, 2);
-    float image_right  = infer_msg.affineMatrix_inv(0, 0) * right  + infer_msg.affineMatrix_inv(0, 2);
-    float image_bottom = infer_msg.affineMatrix_inv(1, 1) * bottom + infer_msg.affineMatrix_inv(1, 2);
+    float image_left   = infer_msg.affineMatrix_inv(0, 0) * (left   - infer_msg.affineVec(0)) \
+                         + infer_msg.affineMatrix_inv(0, 2);
+    float image_top    = infer_msg.affineMatrix_inv(1, 1) * (top    - infer_msg.affineVec(1)) \
+                         + infer_msg.affineMatrix_inv(1, 2);
+    float image_right  = infer_msg.affineMatrix_inv(0, 0) * (right  - infer_msg.affineVec(0)) \
+                         + infer_msg.affineMatrix_inv(0, 2);
+    float image_bottom = infer_msg.affineMatrix_inv(1, 1) * (bottom - infer_msg.affineVec(1)) \
+                         + infer_msg.affineMatrix_inv(1, 2);
+
+    if ( image_left < 0 || image_top< 0 ) {
+      continue;
+    }
 
     boxes.emplace_back(image_left, image_top, image_right, image_bottom, confidence, label);
   }
-  nms_plugin_->Nms(boxes, box_result, parsemsgs_->nms_threshold_);
+
+  // nms_plugin_->Nms(boxes, box_result, parsemsgs_->nms_threshold_);
 }
 
 }  // namespace appinfer

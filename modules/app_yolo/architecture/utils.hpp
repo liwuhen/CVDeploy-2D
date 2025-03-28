@@ -114,6 +114,18 @@ std::shared_ptr<_T> make_nvshared(_T* ptr) {
   return std::shared_ptr<_T>(ptr, [](_T* p) { p->destroy(); });
 }
 
+static string join_dims(const vector<int>& dims){
+  stringstream output;
+  char buf[64];
+  const char* fmts[] = {"%d", " x %d"};
+  for(int i = 0; i < dims.size(); ++i){
+    snprintf(buf, sizeof(buf), fmts[i != 0], dims[i]);
+    output << buf;
+  }
+  return output.str();
+}
+
+
 }  // namespace appinfer
 }  // namespace hpc
 

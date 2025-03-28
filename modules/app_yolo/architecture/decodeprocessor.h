@@ -41,6 +41,7 @@
 #include "plugin.h"
 #include "std_buffer.h"
 #include "task_struct.hpp"
+#include "decode_registry.hpp"
 
 /**
  * @namespace hpc::appinfer
@@ -103,7 +104,7 @@ class DecodeProcessor : public InferModuleBase {
    * @return    bool.
    */
   bool Inference(std::vector<float*>& predict, InfertMsg& infer_msg,\
-     std::shared_ptr<InferMsgQue>& bboxQueue);
+     std::vector<InfertMsg>& callbackMsg, std::shared_ptr<InferMsgQue>& bboxQueue);
 
  private:
   /**
@@ -144,7 +145,8 @@ class DecodeProcessor : public InferModuleBase {
    * @param[in] [float*, vector<Box>&]．
    * @return    void.
    */
-  void CpuDecode(std::vector<float*>& predict, InfertMsg& infer_msg, vector<Box>& box_result);
+  void Decode(std::vector<float*>& predict,
+      InfertMsg& infer_msg, vector<Box>& box_result);
 
  private:
   std::atomic<bool> running_;

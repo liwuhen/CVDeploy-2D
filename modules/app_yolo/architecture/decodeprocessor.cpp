@@ -30,9 +30,9 @@ DecodeProcessor::~DecodeProcessor() {}
  * @description: init．
  */
 bool DecodeProcessor::Init() {
-  model_decode_ = std::make_shared<ModelDecode>();
-  model_decode_->SetParam(parsemsgs_);
-  model_decode_->Init();
+  // model_decode_ = std::make_shared<ModelDecode>();
+  // model_decode_->SetParam(parsemsgs_);
+  // model_decode_->Init();
 
   GLOG_INFO("[Init]: DecodeProcessor module init ");
   return true;
@@ -88,11 +88,13 @@ bool DecodeProcessor::DataResourceRelease() {}
  * @description: Inference
  */
 bool DecodeProcessor::Inference(std::vector<float*>& predict,
-    InfertMsg& infer_msg, std::shared_ptr<InferMsgQue>& bboxQueue) {
+    InfertMsg& infer_msg,
+    std::vector<InfertMsg>& callbackMsg,
+    std::shared_ptr<InferMsgQue>& bboxQueue) {
   imgshape_["src"] = make_pair(infer_msg.height, infer_msg.width);
 
   vector<Box> box_result;
-  CpuDecode(predict, infer_msg, box_result);
+  Decode(predict, infer_msg, box_result);
 
   InfertMsg msg;
   msg = infer_msg;
@@ -100,6 +102,7 @@ bool DecodeProcessor::Inference(std::vector<float*>& predict,
     msg.bboxes.emplace_back(box);
   }
   bboxQueue->Push(msg);
+  callbackMsg.emplace_back(msg);
 
   Visualization(false, infer_msg.image, infer_msg.frame_id, box_result);
 
@@ -114,10 +117,10 @@ void DecodeProcessor::Visualization(bool real_time,
   for (auto& box : results) {
     cv::Scalar color;
     tie(color[0], color[1], color[2]) = random_color(box.label);
-    auto name = cocolabels[box.label];
+    auto name = voclabels[box.label];
     auto caption = cv::format("%s %.2f", name, box.confidence);
-    cv::rectangle(img, cv::Point(box.left, box.top), cv::Point(box.right, box.bottom), color, 2);
-    cv::putText(img, caption, cv::Point(box.left, box.top - 7), 0, 0.8, color, 2, 16);
+    cv::rectangle(img, cv::Point(box.left, box.top), cv::Point(box.right, box.bottom), color, 1);
+    cv::putText(img, caption, cv::Point(box.left, box.top - 3), 0, 0.5, color, 1, 16);
   }
 
   if (real_time) {
@@ -155,17 +158,14 @@ void DecodeProcessor::ScaleBoxes(vector<Box>& box_result) {
 /**
  * @description: Cpu decode．
  */
-void DecodeProcessor::CpuDecode(std::vector<float*>& predict,
+void DecodeProcessor::Decode(std::vector<float*>& predict,
     InfertMsg& infer_msg, vector<Box>& box_result) {
 
-  if((DecodeType)parsemsgs_->decode_type_ == DecodeType::FEATURE_LEVEL) {
-    model_decode_->BboxDecodeFeatureLevel(predict, infer_msg, box_result);
-  } else if ((DecodeType)parsemsgs_->decode_type_ == DecodeType::INPUT_LEVEL) {
-    model_decode_->BboxDecodeInputLevel(predict, infer_msg, box_result);
-  } else {
-    GLOG_ERROR("[CpuDecode]: Decoding method error. ");
-  }
+  auto postprocess = Registry::getInstance()->getRegisterFunc<InfertMsg&, std::vector<Box>&,
+                      std::vector<float*>&, std::shared_ptr<ParseMsgs>&>(parsemsgs_->postprocess_type_);
+  postprocess(infer_msg, box_result, predict, parsemsgs_);
 }
+
 
 }  // namespace appinfer
 }  // namespace hpc

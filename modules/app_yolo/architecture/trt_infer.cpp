@@ -29,11 +29,14 @@ TrtInfer::~TrtInfer() {}
  * @description: init．
  */
 bool TrtInfer::Init() {
+
   // onnx model loading, trt model generation
   if (!isFileExists_stat(parsemsgs_->trt_path_)) {
     GLOG_ERROR("Trt model does not exist. ");
-    BuildModel();
-    return false;
+    if ( !BuildModel() ) {
+      GLOG_ERROR("Build trt model failed. ");
+      return false;
+    }
   }
 
   // parse trt model
@@ -102,7 +105,7 @@ bool TrtInfer::DataResourceRelease() {}
  */
 bool TrtInfer::Inference(float* output_img_device) {
   checkRuntime(cudaMemcpy(gpu_buffers_[engine_name_size_[binding_names_["input"][0]].first],\
-      output_img_device, parsemsgs_->dstimg_size_ * sizeof(uint8_t), cudaMemcpyDeviceToDevice));
+      output_img_device, parsemsgs_->dstimg_size_ * sizeof(float), cudaMemcpyDeviceToDevice));
 
   void** binding = reinterpret_cast<void**>(gpu_buffers_.data());
   bool success = execution_context_->enqueueV2(binding, stream_, nullptr);
@@ -127,21 +130,24 @@ bool TrtInfer::Inference(float* output_img_device) {
  */
 bool TrtInfer::BuildModel() {
   GLOG_INFO("=====> Build TensorRT Engine <===== ");
-  //  Define builder, config and network.
+
+  // Configure builder, config and network.
   auto builder = make_nvshared(createInferBuilder(gLogger));
   if (!builder) {
     GLOG_ERROR("Can not create builder. ");
     return false;
   }
+
+  auto config = make_nvshared(builder->createBuilderConfig());
+  if (!config) {
+    GLOG_ERROR("Can not create config. ");
+    return false;
+  }
+
   const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
   auto network = make_nvshared(builder->createNetworkV2(explicitBatch));
   if (!network) {
     GLOG_ERROR("Can not create network. ");
-    return false;
-  }
-  auto config = make_nvshared(builder->createBuilderConfig());
-  if (!config) {
-    GLOG_ERROR("Can not create config. ");
     return false;
   }
 
@@ -151,10 +157,13 @@ bool TrtInfer::BuildModel() {
     return false;
   }
 
-  int max_workspace_size = 1 << 28;
-  GLOG_ERROR("Set max workspace size = " << max_workspace_size / 1024.0f / 1024.0f << "MB");
-  config->setMaxWorkspaceSize(1 << 28);
 
+  auto profile      = builder->createOptimizationProfile();
+  auto input_tensor = network->getInput(0);
+  auto input_dims   = input_tensor->getDimensions();
+  int max_workspace_size = 1 << 30;
+
+  // Configure model precision
   switch ((ModelACC)parsemsgs_->model_acc_) {
     case ModelACC::MODEL_FLOAT32:
       if (builder->platformHasTf32()) {
@@ -164,29 +173,111 @@ bool TrtInfer::BuildModel() {
     case ModelACC::MODEL_FLOAT16:
       if (builder->platformHasFastFp16()) {
         config->setFlag(BuilderFlag::kFP16);
-      }
+      } else { GLOG_ERROR("Platform not have fast fp16 support. "); }
       break;
     case ModelACC::MODEL_INT8:
       if (builder->platformHasFastInt8()) {
         config->setFlag(BuilderFlag::kINT8);
-      }
+      } else { GLOG_ERROR("Platform not have fast int8 support. "); }
       break;
     default:
       break;
   }
-
   GLOG_INFO("Build model acc[0-fp32, 1-fp16, 2-int8]:  " << parsemsgs_->model_acc_);
 
-  if ( (BatchMode)parsemsgs_->batch_mode_ == BatchMode::DYNAMIC_MODE ) {
-    int maxBatchSize  = 10;
-    auto profile      = builder->createOptimizationProfile();
-    auto input_tensor = network->getInput(0);
-    auto input_dims   = input_tensor->getDimensions();
+  // Configure qat quantize
+  if ( parsemsgs_->quantize_flag_ && (ModelACC)parsemsgs_->model_acc_ == ModelACC::MODEL_INT8 ) {
+    GLOG_INFO("Build qat model. ");
 
+    auto preprocess = Registry::getInstance()->getRegisterFunc<int,
+                      int, float*, const std::vector<std::string>&,
+                      std::shared_ptr<ParseMsgs>&>(parsemsgs_->calib_preprocess_type_);
+
+    // Configure int8 calibration data reading tool
+    hasEntropyCalibrator_ = false;
+    std::vector<std::string> calib_files;
+    std::vector<uint8_t> calib_data;
+    if (!parsemsgs_->quantize_data_.empty()) {
+      LoadCalibDataFile(parsemsgs_->quantize_data_, calib_files);
+      if (calib_files.empty()) {
+        GLOG_ERROR("Calibrator data file is empty. ");
+      }
+    }
+
+    if (!parsemsgs_->calib_table_path_.empty()) {
+      if (isFileExists_stat(parsemsgs_->calib_table_path_)) {
+        calib_data = LoadFile(parsemsgs_->calib_table_path_);
+        if (calib_data.empty()) {
+          GLOG_ERROR("entropyCalibratorFile is exit, but file is empty. ");
+          return false;
+        }
+        hasEntropyCalibrator_ = true;
+      }
+    }
+
+    // Configure int8 calibrator tool
+    auto calibratorDims = input_dims;
+        calibratorDims.d[0] = parsemsgs_->calib_batchsize_;
+    calib_ = createObject<Int8EntropyCalibrator>("Int8EntropyCalibrator");
+    if (hasEntropyCalibrator_) {
+      GLOG_INFO("Using entropy calibrator data:  " <<calib_data.size());
+      calib_->Init(
+          calib_data,      // calibration data
+          calibratorDims,  // model input dimensions
+          preprocess,      // preprocess
+          parsemsgs_       // model parameter structure
+      );
+    } else {
+      GLOG_INFO("Using calibrator image: " <<calib_files.size());
+      calib_->Init(
+          calib_files,     // calibration files datasets
+          calibratorDims,  // model input dimensions
+          preprocess,      // preprocess
+          parsemsgs_       // model parameter structure
+      );
+    }
+    config->setInt8Calibrator(calib_.get());
+    calib_->MemFree();
+  }
+
+  // TensorRt info
+  {
+    GLOG_INFO("Input shape is " <<join_dims(vector<int>(input_dims.d, \
+        input_dims.d + input_dims.nbDims)).c_str());
+    GLOG_INFO("Set max batch size = " <<parsemsgs_->max_batchsize_);
+    GLOG_INFO("Set max workspace size = " <<max_workspace_size / 1024.0f / 1024.0f<<"MB");
+
+    int net_num_input = network->getNbInputs();
+    GLOG_INFO("Network has "<<net_num_input<<" inputs:");
+    std::vector<std::string> input_names(net_num_input);
+    for ( int i = 0; i < net_num_input; ++i ) {
+      auto tensor   = network->getInput(i);
+      auto dims     = tensor->getDimensions();
+      auto dims_str = join_dims(vector<int>(dims.d, dims.d+dims.nbDims));
+      GLOG_INFO("      "<<i<<".["<<tensor->getName()<<"]"<<" shape is "<<dims_str.c_str());
+
+      input_names[i] = tensor->getName();
+    }
+
+    int net_num_output = network->getNbOutputs();
+    GLOG_INFO("Network has "<<net_num_output<<" outputs:");
+    for ( int i = 0; i < net_num_output; ++i ) {
+      auto tensor   = network->getOutput(i);
+      auto dims     = tensor->getDimensions();
+      auto dims_str = join_dims(vector<int>(dims.d, dims.d+dims.nbDims));
+      GLOG_INFO("      "<<i<<".["<<tensor->getName()<<"]"<<" shape is "<<dims_str.c_str());
+    }
+  }
+
+  builder->setMaxBatchSize(parsemsgs_->max_batchsize_);
+  config->setMaxWorkspaceSize(1 << 30);
+
+  // Configure dynamic shape
+  if ( (BatchMode)parsemsgs_->batch_mode_ == BatchMode::DYNAMIC_MODE ) {
     input_dims.d[0] = 1;
     profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMIN, input_dims);
     profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kOPT, input_dims);
-    input_dims.d[0] = maxBatchSize;
+    input_dims.d[0] = parsemsgs_->max_batchsize_;
     profile->setDimensions(input_tensor->getName(), nvinfer1::OptProfileSelector::kMAX, input_dims);
     config->addOptimizationProfile(profile);
   }
@@ -338,6 +429,52 @@ std::vector<uint8_t> TrtInfer::LoadFile(const string& file) {
   }
   in.close();
   return data;
+}
+
+/**
+ * @description: Load image file.
+ */
+void TrtInfer::LoadCalibDataFile(const std::string& path,
+    std::vector<string>& data) {
+  // 支持的图像扩展名
+  static const std::vector<std::string> extensions = {".jpg", ".jpeg", ".png", ".bmp"};
+
+  try {
+    // RAII 管理目录资源
+    FileSystem::DirectoryHandle dirHandle(path);
+
+    // 清空输入向量并预估容量
+    data.clear();
+
+    struct dirent* entry;
+    while ((entry = readdir(dirHandle.get())) != nullptr) {
+        // 跳过 "." 和 ".." 目录
+        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+            std::string filename = entry->d_name;
+            std::string fullPath = path + (path.back() != '/' ? "/" : "") + filename;
+
+            // 获取文件扩展名并转为小写
+            std::string ext;
+            size_t pos = filename.find_last_of('.');
+            if (pos != std::string::npos) {
+                ext = filename.substr(pos);
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            }
+
+            // 检查是否是图像文件
+            if (!ext.empty() && std::find(extensions.begin(), extensions.end(), ext) != extensions.end()) {
+                data.push_back(fullPath);
+            }
+        }
+    }
+  } catch (const std::runtime_error& e) {
+    GLOG_ERROR(" Filesystem error:  "<< e.what());
+    throw;  // 重新抛出，让调用者处理
+  } catch (const std::exception& e) {
+    GLOG_ERROR(" Error:  "<< e.what());
+    throw;
+  }
+
 }
 
 }  // namespace appinfer

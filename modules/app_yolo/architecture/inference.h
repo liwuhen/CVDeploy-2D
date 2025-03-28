@@ -96,6 +96,13 @@ class InferenceEngine : public InferModuleBase {
    */
   bool LoadData(InfertMsg& infer_msg);
 
+  /**
+   * @brief     TriggerCallback.
+   * @param[in] vector<InfertMsg>&
+   * @return    void.
+   */
+  void TriggerCallback(vector<InfertMsg>& infer_msg_vec);
+
  private:
   /**
    * @brief     Module resource release.
@@ -124,6 +131,7 @@ class InferenceEngine : public InferModuleBase {
 
  public:
   std::shared_ptr<InferMsgQue> bboxQueue_;
+  std::vector<InfertMsg> callbackMsg;
 
  private:
   std::atomic<bool> running_;
@@ -139,6 +147,11 @@ class InferenceEngine : public InferModuleBase {
   shared_ptr<DecodeProcessor> decodeProcessor_;
 
   std::shared_ptr<std::thread> worker_ptr_;
+
+  std::vector<double>preproccess_time_;
+  std::vector<double>infer_time_;
+  std::vector<double>decode_time_;
+  std::vector<double>endtoend_time_;
 };
 
 }  // namespace appinfer

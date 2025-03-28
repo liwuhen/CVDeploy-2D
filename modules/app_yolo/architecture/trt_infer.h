@@ -39,6 +39,9 @@
 #include "std_cmake.h"
 #include "task_struct.hpp"
 #include "utils.hpp"
+#include "file.hpp"
+#include "calibrator.hpp"
+#include "function_registry.hpp"
 
 /**
  * @namespace hpc::appinfer
@@ -111,6 +114,13 @@ class TrtInfer : public InferModuleBase {
   std::vector<uint8_t> LoadFile(const string& file);
 
   /**
+   * @brief     Load image file.
+   * @param[in] std::vector<string>&.
+   * @return    bool.
+   */
+  void LoadCalibDataFile(const std::string& path, std::vector<string>& data);
+
+  /**
    * @brief     Inference.
    * @param[in] float*.
    * @return    bool.
@@ -160,6 +170,8 @@ class TrtInfer : public InferModuleBase {
   std::vector<float *> cpu_buffers_;
 
  private:
+  bool hasEntropyCalibrator_;
+
   std::vector<float *> gpu_buffers_;
 
   cudaStream_t stream_;
@@ -170,6 +182,7 @@ class TrtInfer : public InferModuleBase {
   std::shared_ptr<IExecutionContext> execution_context_;
 
   std::shared_ptr<ParseMsgs> parsemsgs_;
+  std::shared_ptr<Int8EntropyCalibrator> calib_;
 };
 
 }  // namespace appinfer
