@@ -34,6 +34,15 @@ namespace hpc {
 
 namespace common {
 
+// voc dataset
+static const char* voclabels[] = {"aeroplane", "bicycle", "bird",
+                                  "boat", "bottle", "bus",
+                                  "car", "cat", "chair",
+                                  "cow", "diningtable", "dog",
+                                  "horse","motorbike", "person",
+                                  "pottedplant", "sheep", "sofa",
+                                  "train", "tvmonitor"};
+
 // coco 数据集的 labels，关于 coco：https://cocodataset.org/#home
 static const char* cocolabels[] = {"person",        "bicycle",      "car",
                                    "motorcycle",    "airplane",     "bus",

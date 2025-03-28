@@ -43,26 +43,32 @@ struct Box {
   Box(float left, float top, float right, float bottom, float confidence, int label) : left(left), top(top), right(right), bottom(bottom), confidence(confidence), label(label) {}
 
   Box operator=(const Box& obj) {
-    this->left = obj.left;
-    this->top = obj.top;
-    this->right = obj.right;
-    this->bottom = obj.bottom;
+    this->left       = obj.left;
+    this->top        = obj.top;
+    this->right      = obj.right;
+    this->bottom     = obj.bottom;
     this->confidence = obj.confidence;
-    this->label = obj.label;
+    this->label      = obj.label;
     return *this;
   }
 };
 
 struct InfertMsg {
-  InfertMsg() : width(0), height(0), frame_id(0), timestamp(0), img_size(0) { this->image = cv::Mat(); }
+  InfertMsg() :
+    width(0), height(0), index(0), frame_id(0), timestamp(0), img_size(0) {
+      this->image = cv::Mat();
+      this->affineMatrix_cv = cv::Mat(2, 3, CV_32F);
+    }
 
   InfertMsg operator=(const InfertMsg& obj) {
-    this->width = obj.width;
-    this->height = obj.height;
-    this->img_size = obj.img_size;
-    this->frame_id = obj.frame_id;
+    this->index     = obj.index;
+    this->width     = obj.width;
+    this->height    = obj.height;
+    this->img_size  = obj.img_size;
+    this->frame_id  = obj.frame_id;
     this->timestamp = obj.timestamp;
-    this->image = obj.image.clone();
+    this->image     = obj.image.clone();
+    this->affineVec = obj.affineVec;
     this->affineMatrix = obj.affineMatrix;
     this->affineMatrix_inv = obj.affineMatrix_inv;
 
@@ -73,13 +79,16 @@ struct InfertMsg {
   }
 
  public:
+  uint32_t index;
   uint32_t width;
   uint32_t height;
   uint32_t img_size;
   uint32_t frame_id;
   int64_t timestamp;
   cv::Mat image;
+  cv::Mat affineMatrix_cv;
   std::vector<Box> bboxes;
+  Eigen::Vector2f affineVec = Eigen::Vector2f::Zero();
   Eigen::Matrix3f affineMatrix = Eigen::Matrix3f::Identity();
   Eigen::Matrix3f affineMatrix_inv = Eigen::Matrix3f::Identity();
 };

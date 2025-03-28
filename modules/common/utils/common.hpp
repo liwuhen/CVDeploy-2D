@@ -73,6 +73,47 @@ static bool save_file(const std::string& file, const void* data, size_t length) 
   return true;
 }
 
+/**
+ * @description: Get now time.
+ */
+static double timestamp_now_float() {
+  return chrono::duration_cast<chrono::microseconds>(chrono::system_clock::now().time_since_epoch()).count() / 1000.0;
+}
+
+/**
+ * @description: Get average now time.
+ */
+static std::vector<double> GetAverageTime(std::vector<double>& preproccess_time,
+  std::vector<double>& infer_time,
+  std::vector<double>& decode_time,
+  std::vector<double>& endtoend_time) {
+
+    double preprocess_times = 0.0;
+    double infer_times      = 0.0;
+    double decode_times     = 0.0;
+    double endtoend_times   = 0.0;
+    std::vector<double> time;
+    int nums = preproccess_time.size();
+    for ( int ind = 0; ind < nums; ind++ ) {
+      preprocess_times += preproccess_time[ind];
+      infer_times      += infer_time[ind];
+      decode_times     += decode_time[ind];
+      endtoend_times   += endtoend_time[ind];
+
+    }
+
+    auto average_pretime = preprocess_times / nums;
+    auto average_inftime = infer_times / nums;
+    auto average_dectime = decode_times / nums;
+    auto average_endtoendtime = endtoend_times / nums;
+    time.push_back(average_pretime);
+    time.push_back(average_inftime);
+    time.push_back(average_dectime);
+    time.push_back(average_endtoendtime);
+    time.push_back(endtoend_times);
+  return time;
+}
+
 }  // namespace common
 }  // namespace hpc
 

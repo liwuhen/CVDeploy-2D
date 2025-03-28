@@ -96,7 +96,7 @@ repos:
   rev: "v2.1.0"
   hooks:
   - id: codespell
-    exclude: "docs/hpcdoc/source/_static"
+    exclude: "docs/hpcdoc/source/_static|modules/common/json"
     args: ["-Lccompiler,intstruct"]
 
 # Check schemas on some of our YAML files
