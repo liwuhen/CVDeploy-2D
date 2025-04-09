@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATA_TYPE="voc"
+DATA_TYPE="coco"
 DATA_PATH=""
 LABEL_PATH=""
 SAVE_PATH=""
@@ -8,7 +8,7 @@ SAVE_PATH=""
 if [ "${DATA_TYPE}" == "coco" ] ; then
     DATA_PATH="/home/selflearning/dataset/tinycoco/images/val2017"
     LABEL_PATH="/home/selflearning/dataset/tinycoco/labels/val2017"
-    SAVE_PATH="/home/selflearning/opensource/HPC_Deploy/install_nvidia/yolov5_bin/x86/workspace/gt_val.json"
+    SAVE_PATH="/home/selflearning/opensource/HPC_Deploy/install_nvidia/yolov11_bin/x86/workspace/gt_val.json"
 
 elif [ "${DATA_TYPE}" == "voc" ] ; then
     DATA_PATH="/home/selflearning/dataset/VOC/images/val"

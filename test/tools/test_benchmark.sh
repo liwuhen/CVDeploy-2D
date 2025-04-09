@@ -1,12 +1,12 @@
 #!/bin/bash
 
 
-EVAL_DATA_TYPE="voc"
+EVAL_DATA_TYPE="coco"
 ROOT_PATH="/home/selflearning/opensource/HPC_Deploy"
 
 if [ "${EVAL_DATA_TYPE}" == "coco" ] ; then
-    GT_PATH=$ROOT_PATH/"install_nvidia/yolov5_bin/x86/workspace/gt_val.json"
-    INFER_PATH=$ROOT_PATH/"install_nvidia/yolov5_bin/x86/workspace/model_prediction.json"
+    GT_PATH=$ROOT_PATH/"install_nvidia/yolov11_bin/x86/workspace/gt_val.json"
+    INFER_PATH=$ROOT_PATH/"install_nvidia/yolov11_bin/x86/workspace/model_prediction.json"
 
 elif [ "${EVAL_DATA_TYPE}" == "voc" ] ; then
     GT_PATH=$ROOT_PATH/"install_nvidia/yolov5_bin/x86/workspace/gt_val.json"
