@@ -37,12 +37,18 @@ Visit our documentation to learn more.
 - [Supported Object Tracking](./docs/hpcdoc/source/algorithm/Supported_Object_Tracking.md)
 
 # Performances
-|Model|Platform|Resolution|FPS|Memory|Cpu|
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|Yolov5|NVIDIA RTX4060|640x640|-|-|-|
-|Yolov5|NVIDIA orin|640x640|-|-|-|
-|Yolox|NVIDIA RTX4060|416x416|-|-|-|
-|Yolox|NVIDIA orin|416x416|-|-|-|
+The validation dataset is TinyCOCO, which contains 1,000 training samples and 500 test samples. All models in the table were trained on the full COCO2017 dataset.
+
+|Model|Platform|Resolution|mAP50-95|mAP50|FPS|Cpu|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|Yolov5|NVIDIA RTX4060|640x640|-|-|-|-|-|
+|Yolov5|NVIDIA orin x|640x640|-|-|-|-|-|
+|Yolov8|NVIDIA RTX4060|480x640|-|-|-|-|-|
+|Yolov8|NVIDIA orin x|480x640|-|-|-|-|-|
+|Yolov11|NVIDIA RTX4060|480x640|-|-|-|-|-|
+|Yolov11|NVIDIA orin x|480x640|-|-|-|-|-|
+|Yolox|NVIDIA RTX4060|416x416|-|-|-|-|-|
+|Yolox|NVIDIA orin x|416x416|-|-|-|-|-|
 
 # ![Contribute](https://img.shields.io/badge/how%20to%20contribute-project-brightgreen) Contributing
 Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for the contributing guideline.We encourage you to join the effort and contribute feedback, ideas, and code. You can participate in Working Groups, Working Groups have most of their discussions on [Slack](https://app.slack.com/client/T07U5CEEXCP/C07UKUA9TCJ) or QQ (938558640).
@@ -51,4 +57,4 @@ Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md
 # References
 - [Yolox: https://github.com/Megvii-BaseDetection/YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)
 - [Ultralytics: https://github.com/ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
-- **Blog**：[Setup Environment](https://zhuanlan.zhihu.com/p/818205320)
+- [Setup Environment: https://zhuanlan.zhihu.com/p/818205320](https://zhuanlan.zhihu.com/p/818205320)
