@@ -80,6 +80,14 @@ algorithm/Bytrack
 
 ```{toctree}
 :maxdepth: 1
+:caption: Model compression
+
+compression/ptq
+compression/qat
+```
+
+```{toctree}
+:maxdepth: 1
 :caption: Hardware Platform
 
 platform/nvidia

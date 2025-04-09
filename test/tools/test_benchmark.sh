@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-EVAL_DATA_TYPE="coco"
+EVAL_DATA_TYPE="voc"
 ROOT_PATH="/home/selflearning/opensource/HPC_Deploy"
 
 if [ "${EVAL_DATA_TYPE}" == "coco" ] ; then

@@ -14,7 +14,7 @@ static bool voc_save_to_json(const string& file,
         uint32_t image_id = msg.frame_id;
 
         auto& boxes = msg.bboxes;
-        for(auto& box : boxes){
+        for(auto& box : boxes) {
             Json::Value jitem;
             jitem["image_id"]    = image_id;
             jitem["category_id"] = box.label;
