@@ -49,7 +49,6 @@ Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md
 
 
 # References
-- [Yolov5](https://github.com/ultralytics/yolov5)
-- [Yolox](https://github.com/Megvii-BaseDetection/YOLOX)
-
+- [Yolox: https://github.com/Megvii-BaseDetection/YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)
+- [Ultralytics: https://github.com/ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
 - **Blog**：[Setup Environment](https://zhuanlan.zhihu.com/p/818205320)
