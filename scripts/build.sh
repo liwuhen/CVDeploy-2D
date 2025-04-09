@@ -66,6 +66,9 @@ APP_PATH=""
 if [ "${MODEL_FLAG}" == "yolov5"  ]; then
     LIB_PATH=app_yolo
     APP_PATH=yolov5
+elif [ "${MODEL_FLAG}" == "yolov11" ]; then
+    LIB_PATH=app_yolo
+    APP_PATH=yolov11
 elif [ "${MODEL_FLAG}" == "yolox" ]; then
     LIB_PATH=app_yolo
     APP_PATH=yolox

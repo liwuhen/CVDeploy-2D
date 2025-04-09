@@ -138,9 +138,64 @@ inline void PostprocessV5CpuAchorFree(
 
 }
 
+/**
+ * @description: YOLOV11 cpu postprocess anchor free.
+ */
+inline void PostprocessV11CpuAchorFree(
+    InfertMsg& infer_msg,
+    std::vector<Box>& box_result,
+    std::vector<float*>& predict,
+    std::shared_ptr<ParseMsgs>& parsemsgs) {
+
+    vector<Box> boxes;
+    int num_classes = parsemsgs->predict_dim_[0][2] - 4;
+    for (int i = 0; i < parsemsgs->predict_dim_[0][1]; ++i)
+    {
+        float* pitem  = predict[0] + i * parsemsgs->predict_dim_[0][2];
+        float* pclass = pitem + 4;
+
+        int label  = std::max_element(pclass, pclass + num_classes) - pclass;
+        float prob = pclass[label];
+        float confidence = prob;    // anchor free
+        if (confidence < parsemsgs->obj_threshold_) continue;
+
+        float cx     = pitem[0];
+        float cy     = pitem[1];
+        float width  = pitem[2];
+        float height = pitem[3];
+        float left   = cx - width  * 0.5;
+        float top    = cy - height * 0.5;
+        float right  = cx + width  * 0.5;
+        float bottom = cy + height * 0.5;
+
+        // 输入图像层级模型预测框 ==> 映射回原图上尺寸
+        float image_left   = infer_msg.affineMatrix_inv(0, 0) * (left   - infer_msg.affineVec(0)) \
+                            + infer_msg.affineMatrix_inv(0, 2);
+        float image_top    = infer_msg.affineMatrix_inv(1, 1) * (top    - infer_msg.affineVec(1)) \
+                            + infer_msg.affineMatrix_inv(1, 2);
+        float image_right  = infer_msg.affineMatrix_inv(0, 0) * (right  - infer_msg.affineVec(0)) \
+                            + infer_msg.affineMatrix_inv(0, 2);
+        float image_bottom = infer_msg.affineMatrix_inv(1, 1) * (bottom - infer_msg.affineVec(1)) \
+                            + infer_msg.affineMatrix_inv(1, 2);
+
+        if ( image_left < 0 || image_top< 0 ) {
+            continue;
+        }
+
+        boxes.emplace_back(image_left, image_top, image_right, image_bottom, confidence, label);
+    }
+
+    auto nms = Registry::getInstance()->getRegisterFunc<float,
+                std::vector<Box>&, std::vector<Box>&>(parsemsgs->nms_type_);
+
+    nms(parsemsgs->nms_threshold_, boxes, box_result);
+
+}
+
 // 全局自动注册
 REGISTER_CALIBRATOR_FUNC("postv5_cpu_anchorbase", PostprocessV5CpuAchorBase);
 REGISTER_CALIBRATOR_FUNC("postv5_cpu_anchorfree", PostprocessV5CpuAchorFree);
+REGISTER_CALIBRATOR_FUNC("postv11_cpu_anchorfree", PostprocessV11CpuAchorFree);
 
 }  // namespace appinfer
 }  // namespace hpc

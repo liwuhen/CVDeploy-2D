@@ -24,7 +24,7 @@
 namespace hpc {
 namespace common {
 
-#define MODEL_FLAG "yolov5"
+#define MODEL_FLAG "yolov11"
 
 } //namespace common
 } //namespace hpc
