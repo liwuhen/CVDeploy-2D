@@ -1,0 +1,45 @@
+common_config:
+  log_path: /workspace/log/
+  model_name: yolov8
+  max_batchsize: 16
+  quantize_flag: true   # begin PTQ
+  quantize_data: /home/selflearning/dataset/tinycoco/images/calib_data_100
+  calib_table_path: /home/selflearning/opensource/HPC_Deploy/install_nvidia/yolov8_bin/x86/config/model/calibratorfile.cache
+  calib_batchsize: 1
+  calib_preprocess_type: prev8_cpu_calib
+
+model_config:
+  preprocess_type: prev8_cpu
+  postprocess_type: postv8_cpu_anchorfree
+  nms_type: nms
+
+inference_config:
+  model_acc: 2     # 0-fp32, 1-fp16, 2-int8
+  infer_mode: 1    # 0-gpu, 1-cpu, 2-npu
+  batch_mode: 1    # 0-static batch, 1-dynamic batch
+  input_msgdepth: 1000
+  decode_msgdepth: 1000
+  onnx_path: /config/model/yolov8s_coco.onnx
+  engine_path: /config/model/yolov8s_int8_coco.trt
+  predict_path: /config/model/predict.data
+  offline_test:
+    img_path: /config/data/coco/car.jpg
+    save_img: /workspace/image
+
+preprocessor_config:
+  batch_size: 1
+  src_img_width: 3840
+  src_img_height: 2160
+  src_img_channel: 3
+  dst_img_width: 640
+  dst_img_height: 480
+  dst_img_channel: 3
+
+predict_config:
+  decode_type: 1
+  branch_num: 1
+  predict_dim: [[1, 6300, 84]]   #coco [1, 6300, 84]
+  branchs_dim: [[1, 1, 60, 80],[1, 1, 30, 40],[1, 1, 15, 20]] #coco
+  max_objects: 0
+  obj_threshold: 0.001
+  nms_threshold: 0.7

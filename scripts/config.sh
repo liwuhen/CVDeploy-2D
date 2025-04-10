@@ -44,7 +44,7 @@ CONFIGURE_SETS=("all" "clean" "arm" "x86" "pack")
 # model param
 MODEL_FLAG=NONE
 MODEL_BOOL_FLAG=False
-MODEL_SETS=("yolov5" "yolov11" "yolox")
+MODEL_SETS=("yolov5" "yolov8" "yolov11" "yolox")
 
 # compiler platform
 PLATFORM_FLAG=NONE
@@ -99,7 +99,7 @@ function parse_args()
     if [ "$MODEL_BOOL_FLAG" == "False" ] ; then
             echo -e "\e[1m\e[34m[Bash-Model-${TIME}]: parameters not in model sets.
 Available model parameters are as follows:
-    1) yolov5    2) yolov11    3) yolox \e[0m"
+    1) yolov5    2) yolov8    3) yolov11    4) yolox \e[0m"
             exit 1
     fi
     # check platform

@@ -168,6 +168,121 @@ inline void PreprocessV5Gpu(
 }
 
 /**
+ * @description: YOLOV8.
+ */
+inline void PreprocessV8CpuCalib(int current,
+    int count,
+    float* input_data_host,
+    const std::vector<std::string>& files,
+    std::shared_ptr<ParseMsgs>& parsemsgs) {
+
+    GLOG_INFO("Calibrator Preprocess: "<<count<<" / "<<current);
+
+    for ( auto& img : files ) {
+        auto image = cv::imread(img);
+        InfertMsg input_msg;
+        CalAffineMatrix(image, input_msg, parsemsgs);
+        cv::Mat input_image(parsemsgs->dst_img_h_, parsemsgs->dst_img_w_, CV_8UC3);
+        // 对图像做平移缩放旋转变换，可逆
+        cv::warpAffine(image, input_image, input_msg.affineMatrix_cv, input_image.size(), \
+            cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar::all(114));
+
+        int image_area = input_image.cols * input_image.rows;
+        unsigned char* pimage = input_image.data;
+
+        // HWC to CHW | BGR to RGB | 255
+        float* phost_b = input_data_host + image_area * 0;
+        float* phost_g = input_data_host + image_area * 1;
+        float* phost_r = input_data_host + image_area * 2;
+        for (int i = 0; i < image_area; ++i, pimage += 3) {
+            // 注意这里的顺序 rgb 调换了
+            *phost_r++ = pimage[0] / 255.0f;
+            *phost_g++ = pimage[1] / 255.0f;
+            *phost_b++ = pimage[2] / 255.0f;
+        }
+        input_data_host += image_area * 3;
+    }
+}
+
+/**
+ * @description: YOLOV8 Gpu.
+ */
+inline void PreprocessV8GpuCalib(int current,
+    int count,
+    float* dstimg,
+    const std::vector<std::string>& files,
+    std::shared_ptr<ParseMsgs>& parsemsgs) {
+
+    GLOG_INFO("Calibrator Preprocess: "<<count<<" / "<<current);
+
+    uint8_t* input_data_device;
+    checkRuntime(cudaMalloc(&input_data_device, parsemsgs->srcimg_size_));
+
+    for ( auto& img : files ) {
+
+        auto image = cv::imread(img);
+        InfertMsg input_msg;
+        input_msg.image    = image.clone();
+        input_msg.img_size = image.cols * image.rows * 3;
+        input_msg.width    = image.cols;
+        input_msg.height   = image.rows;
+        CalAffineMatrix(image, input_msg, parsemsgs);
+
+        checkRuntime(cudaMemcpy(input_data_device, input_msg.image.data,\
+            input_msg.img_size * sizeof(uint8_t), cudaMemcpyHostToDevice));
+        warp_affine_bilinear(input_data_device, parsemsgs->batchsizes_,\
+            input_msg, dstimg, parsemsgs->dst_img_w_, parsemsgs->dst_img_h_,\
+            114, nullptr, AppYolo::YOLOV5_MODE);
+
+        dstimg += input_msg.img_size;
+
+    }
+    checkRuntime(cudaFree(input_data_device));
+}
+
+/**
+ * @description: YOLOV8 Cpu.
+ */
+inline void PreprocessV8Cpu(
+    InfertMsg& input_msg,
+    float* input_data_host,
+    std::shared_ptr<ParseMsgs>& parsemsgs) {
+
+    cv::Mat input_image(parsemsgs->dst_img_h_, parsemsgs->dst_img_w_, CV_8UC3);
+    // 对图像做平移缩放旋转变换，可逆
+    cv::warpAffine(input_msg.image, input_image, input_msg.affineMatrix_cv, input_image.size(), \
+        cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar::all(114));
+
+    int image_area = input_image.cols * input_image.rows;
+    unsigned char* pimage = input_image.data;
+
+    // HWC to CHW | BGR to RGB | 255
+    float* phost_b = input_data_host + image_area * 0;
+    float* phost_g = input_data_host + image_area * 1;
+    float* phost_r = input_data_host + image_area * 2;
+    for (int i = 0; i < image_area; ++i, pimage += 3) {
+        // 注意这里的顺序 rgb 调换了
+        *phost_r++ = pimage[0] / 255.0f;
+        *phost_g++ = pimage[1] / 255.0f;
+        *phost_b++ = pimage[2] / 255.0f;
+    }
+}
+
+/**
+ * @description: YOLOV8 Gpu.
+ */
+inline void PreprocessV8Gpu(
+    InfertMsg& input_msg,
+    float* dstimg,
+    uint8_t* input_data_device,
+    std::shared_ptr<ParseMsgs>& parsemsgs) {
+
+    warp_affine_bilinear(input_data_device, parsemsgs->batchsizes_,\
+        input_msg, dstimg, parsemsgs->dst_img_w_, parsemsgs->dst_img_h_,\
+        114, nullptr, AppYolo::YOLOV5_MODE);
+}
+
+/**
  * @description: YOLOV11.
  */
 inline void PreprocessV11CpuCalib(int current,
@@ -294,6 +409,10 @@ REGISTER_CALIBRATOR_FUNC("prev5_cpu_calib", PreprocessV5CpuCalib);
 REGISTER_CALIBRATOR_FUNC("prev5_gpu_calib", PreprocessV5GpuCalib);
 REGISTER_CALIBRATOR_FUNC("prev5_cpu", PreprocessV5Cpu);
 REGISTER_CALIBRATOR_FUNC("prev5_gpu", PreprocessV5Gpu);
+REGISTER_CALIBRATOR_FUNC("prev8_cpu_calib", PreprocessV8CpuCalib);
+REGISTER_CALIBRATOR_FUNC("prev8_gpu_calib", PreprocessV8GpuCalib);
+REGISTER_CALIBRATOR_FUNC("prev8_cpu", PreprocessV8Cpu);
+REGISTER_CALIBRATOR_FUNC("prev8_gpu", PreprocessV8Gpu);
 REGISTER_CALIBRATOR_FUNC("prev11_cpu_calib", PreprocessV11CpuCalib);
 REGISTER_CALIBRATOR_FUNC("prev11_gpu_calib", PreprocessV11GpuCalib);
 REGISTER_CALIBRATOR_FUNC("prev11_cpu", PreprocessV11Cpu);

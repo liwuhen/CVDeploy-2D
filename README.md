@@ -39,16 +39,12 @@ Visit our documentation to learn more.
 # Performances
 The validation dataset is TinyCOCO, which contains 1,000 training samples and 500 test samples. All models in the table were trained on the full COCO2017 dataset.
 
-|Model|Platform|Resolution|mAP50-95|mAP50|FPS|Cpu|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|Yolov5|NVIDIA RTX4060|640x640|-|-|-|-|-|
-|Yolov5|NVIDIA orin x|640x640|-|-|-|-|-|
-|Yolov8|NVIDIA RTX4060|480x640|-|-|-|-|-|
-|Yolov8|NVIDIA orin x|480x640|-|-|-|-|-|
-|Yolov11|NVIDIA RTX4060|480x640|-|-|-|-|-|
-|Yolov11|NVIDIA orin x|480x640|-|-|-|-|-|
-|Yolox|NVIDIA RTX4060|416x416|-|-|-|-|-|
-|Yolox|NVIDIA orin x|416x416|-|-|-|-|-|
+|Model|Platform|Resolution|mAP50-95(fp32)|mAP50(fp32)|mAP50-95(fp16)|mAP50(fp16)|mAP50-95(int8)|mAP50(int8)|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|Yolov5|RTX4060/orin x|640x640|0.458|0.619|0.459|0.619|0.424|0.576|-|
+|Yolov8|RTX4060/orin x|480x640|0.467|0.622|0.468|0.622|0.453|0.604|-|
+|Yolov11|RTX4060/orin x|480x640|0.491|0.656|0.491|0.657|0.458|0.607|-|
+|Yolox|RTX4060/orin x|416x416|-|-|-|-|-|-|-|
 
 # ![Contribute](https://img.shields.io/badge/how%20to%20contribute-project-brightgreen) Contributing
 Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for the contributing guideline.We encourage you to join the effort and contribute feedback, ideas, and code. You can participate in Working Groups, Working Groups have most of their discussions on [Slack](https://app.slack.com/client/T07U5CEEXCP/C07UKUA9TCJ) or QQ (938558640).
