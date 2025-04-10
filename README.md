@@ -51,7 +51,6 @@ Visit our documentation to learn more.
 # ![Contribute](https://img.shields.io/badge/how%20to%20contribute-project-brightgreen) Contributing
 Welcome users to participate in these projects. Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for the contributing guideline.We encourage you to join the effort and contribute feedback, ideas, and code. You can participate in Working Groups, Working Groups have most of their discussions on [Slack](https://app.slack.com/client/T07U5CEEXCP/C07UKUA9TCJ) or QQ (938558640).
 
-https://drive.google.com/drive/folders/1_0YjElSSMCbeTdD2FUbJE6zIHsHhynug
 # References
 - [Yolox: https://github.com/Megvii-BaseDetection/YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)
 - [Ultralytics: https://github.com/ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
