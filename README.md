@@ -31,10 +31,10 @@ The repository mainly provides 2D model inference functionality, and the code pr
 
 # Getting Started
 Visit our documentation to learn more.
-- [Installation](./docs/hpcdoc/source/getting_started/installation.md)
-- [Quickstart](./docs/hpcdoc/source/getting_started/Quickstart.md)
-- [Supported Models](./docs/hpcdoc/source/algorithm/Supported_Models.md)
-- [Supported Object Tracking](./docs/hpcdoc/source/algorithm/Supported_Object_Tracking.md)
+- [Installation](./docs/source/getting_started/installation.md)
+- [Quickstart](./docs/source/getting_started/Quickstart.md)
+- [Supported Models](./docs/source/algorithm/Supported_Models.md)
+- [Supported Object Tracking](./docs/source/algorithm/Supported_Object_Tracking.md)
 
 # Performances
 - Dataset: The validation dataset is TinyCOCO, which contains 1,000 training samples and 500 test samples. All models in the table were trained on the full COCO2017 dataset.
